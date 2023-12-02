@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+import {Script} from 'forge-std/Script.sol';
 import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
@@ -22,7 +23,7 @@ contract DeployOracle is Script {
   uint256 private constant ORACLE_PERIOD = 1 seconds;
 
   IBaseOracle public chainlinkEthUSDPriceFeed;
-  IBaseOracle public camelotRelayer;
+  IBaseOracle public relayer;
   IBaseOracle public denominatedOracle;
 
   // ChainlinkRelayerFactory public chainlinkRelayerFactory;
@@ -31,6 +32,8 @@ contract DeployOracle is Script {
 
   address public tokenA = 0xEEB6187f4efAE5f513Dbf2873041CE7a3a375373;
   address public tokenB = 0x1F17CB9B80192E5C6E9BbEdAcc5F722a4e93f16e;
+
+  address public algebraV3Factory = address(123);
 
   function run() public {
     vm.startBroadcast(vm.envUint('GOERLI_PK'));
@@ -43,7 +46,7 @@ contract DeployOracle is Script {
     //   chainlinkRelayerFactory.deployChainlinkRelayer(GOERLI_CHAINLINK_ETH_USD_FEED, ORACLE_PERIOD);
 
     // deploy camelot relayer
-    camelotRelayer = relayerFactory.deployCamelotRelayer(tokenA, tokenB, uint32(ORACLE_PERIOD));
+    relayer = relayerFactory.deployAlgebraRelayer(algebraV3Factory, tokenA, tokenB, uint32(ORACLE_PERIOD));
 
     // deploy denominated oracle
     // denominatedOracle =
@@ -56,8 +59,8 @@ contract DeployOracle is Script {
    * @dev setup functions
    */
   function deployFactories() public {
-    chainlinkRelayerFactory = new ChainlinkRelayerFactory();
-    camelotRelayerFactory = new CamelotRelayerFactory();
-    denominatedOracleFactory = new DenominatedOracleFactory();
+    // chainlinkRelayerFactory = new ChainlinkRelayerFactory();
+    relayerFactory = new RelayerFactory();
+    // denominatedOracleFactory = new DenominatedOracleFactory();
   }
 }

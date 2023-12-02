@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
-import {FixedPointMathLib} from '@isolmate/utils/FixedPointMathLib.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
@@ -19,8 +19,6 @@ import {Router} from '@script/dexrelayer/Router.sol';
 // source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $GOERLI_RPC
 
 contract DeployBase is Script {
-  using FixedPointMathLib for uint256;
-
   // Constants
   uint256 private constant WAD = 1e18;
   uint256 private constant MINT_AMOUNT = 1_000_000 ether;
@@ -99,8 +97,18 @@ contract DeployBase is Script {
   }
 
   function getSqrtPrice(uint256 _initWethAmount, uint256 _initODAmount) public returns (uint160) {
-    uint256 price = _initWethAmount.divWadDown(_initODAmount);
-    uint256 sqrtPriceX96 = FixedPointMathLib.sqrt(price * WAD) * (2 ** 96);
+    uint256 price = (_initWethAmount * WAD) / _initODAmount;
+    uint256 sqrtPriceX96 = sqrt(price * WAD) * (2 ** 96);
     return uint160(sqrtPriceX96);
+  }
+
+  // TODO test against isomate sqrt function
+  function sqrt(uint256 x) public returns (uint256 y) {
+    uint256 z = (x + 1) / 2;
+    y = x;
+    while (z < y) {
+      y = z;
+      z = (x / z + z) / 2;
+    }
   }
 }

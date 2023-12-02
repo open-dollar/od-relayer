@@ -14,7 +14,7 @@ abstract contract FactoryChild {
 
   // --- Modifiers ---
 
-  /// @notice Verifies that the caller is the factory
+  ///@dev Verifies that the caller is the factory
   modifier onlyFactory() {
     require(msg.sender == factory, 'CallerNotFactory');
     _;

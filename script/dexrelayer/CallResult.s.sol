@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+import {Script} from 'forge-std/Script.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
 
@@ -27,7 +28,7 @@ contract CallResult is Script {
       uint16 timepointIndex,
       uint8 communityFee,
       bool unlocked
-    ) = getGlobalState(IAlgebraPool(relayer.camelotPool()));
+    ) = getGlobalState(IAlgebraPool(relayer.algebraPool()));
 
     relayer.getResultWithValidity();
     vm.stopBroadcast();
