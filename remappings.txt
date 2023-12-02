@@ -1,8 +1,10 @@
 @openzeppelin/=lib/openzeppelin-contracts/
+@isolmate/=lib/isolmate/src/
+@cryptoalgebra/v1.9-core/contracts/=lib/AlgebraV1.9/src/core/contracts/
+
 @algebra-core/=lib/AlgebraV1.9/src/core/contracts/
 @algebra-periphery/=lib/AlgebraV1.9/src/periphery/contracts/
 @algebra-tokenomics/=lib/AlgebraV1.9/src/tokenomics/contracts/
-@cryptoalgebra/v1.9-core/contracts/=lib/AlgebraV1.9/src/core/contracts/
 
 @contracts/=src/contracts/
 @interfaces/=src/interfaces/

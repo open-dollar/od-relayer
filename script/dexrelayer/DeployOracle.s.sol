@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.19;
+pragma solidity 0.7.6;
 
 import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
