@@ -7,3 +7,6 @@
 [submodule "lib/AlgebraV1.9"]
 	path = lib/AlgebraV1.9
 	url = https://github.com/cryptoalgebra/AlgebraV1.9
+[submodule "lib/isolmate"]
+	path = lib/isolmate
+	url = https://github.com/defi-wonderland/isolmate
