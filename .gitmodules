@@ -4,3 +4,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "lib/AlgebraV1.9"]
+	path = lib/AlgebraV1.9
+	url = https://github.com/cryptoalgebra/AlgebraV1.9
