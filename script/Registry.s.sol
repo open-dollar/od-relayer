@@ -7,6 +7,9 @@ address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 // Data for dexrelayer script
 address constant RELAYER_DATA = 0x98A724ECA2804DE70Cae1f28E070D3973CAdcf05;
 
+// Camelot Relayer
+address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0;
+
 uint256 constant ORACLE_PERIOD = 1 seconds;
 uint256 constant WAD = 1e18;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
