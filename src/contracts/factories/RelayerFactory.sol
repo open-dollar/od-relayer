@@ -27,11 +27,11 @@ contract RelayerFactory {
     address _baseToken,
     address _quoteToken,
     uint32 _quotePeriod
-  ) external returns (IBaseOracle _Relayer) {
+  ) external returns (IBaseOracle _relayer) {
     relayerCounter++;
-    _Relayer = IBaseOracle(address(new RelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
-    _relayers[relayerCounter] = address(_Relayer);
-    emit NewAlgebraRelayer(address(_Relayer), _baseToken, _quoteToken, _quotePeriod);
+    _relayer = IBaseOracle(address(new RelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
+    _relayers[relayerCounter] = address(_relayer);
+    emit NewAlgebraRelayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);
   }
 
   // --- Views ---

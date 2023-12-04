@@ -10,53 +10,46 @@ import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {Router} from '@script/dexrelayer/Router.sol';
+import {Router} from '@contracts/for-test/Router.sol';
+import {Data} from '@contracts/for-test/Data.sol';
 
 // BROADCAST
-// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $GOERLI_RPC --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
-// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $GOERLI_RPC
+// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
 contract DeployBase is Script {
-  // Constants
-  uint256 private constant WAD = 1e18;
-  uint256 private constant MINT_AMOUNT = 1_000_000 ether;
-  uint256 private constant ORACLE_PERIOD = 1 seconds;
-
   // Pool & Relayer Factories
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(address(0));
-
-  // Tokens
-  address public tokenA;
-  address public tokenB;
-
-  // Liquidity Pool
-  IAlgebraPool public pool;
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(ALGEBRA_FACTORY);
 
   // Router
   Router public router;
 
+  Data public data;
+
   function run() public {
-    vm.startBroadcast(vm.envUint('GOERLI_PK'));
+    vm.startBroadcast(vm.envUint('ARB_SEPOLIA_PK'));
+
+    data = new Data();
 
     deployTestTokens();
     deployPool();
 
     // check balance before
-    (uint256 bal0, uint256 bal1) = getPoolBal(pool);
+    (uint256 bal0, uint256 bal1) = data.getPoolBal();
 
     // deploy router and approve it to handle funds
-    router = new Router(pool, H);
-    IERC20(tokenA).approve(address(router), MINT_AMOUNT);
-    IERC20(tokenB).approve(address(router), MINT_AMOUNT);
+    router = new Router(data.pool(), H);
+    IERC20(data.tokenA()).approve(address(router), MINT_AMOUNT);
+    IERC20(data.tokenB()).approve(address(router), MINT_AMOUNT);
 
     // add liquidity
-    (int24 bottomTick, int24 topTick) = generateTickParams();
+    (int24 bottomTick, int24 topTick) = data.generateTickParams();
     router.addLiquidity(bottomTick, topTick, uint128(100));
 
     // check balance after
-    (bal0, bal1) = getPoolBal(pool);
+    (bal0, bal1) = data.getPoolBal();
 
     vm.stopBroadcast();
   }
@@ -69,31 +62,13 @@ contract DeployBase is Script {
     MintableERC20 token1 = new MintableERC20('LST Test2', 'LST2', 18);
     token0.mint(H, MINT_AMOUNT);
     token1.mint(H, MINT_AMOUNT);
-    tokenA = address(token0);
-    tokenB = address(token1);
+    data.setTokens(address(token0), address(token1));
   }
 
   function deployPool() public {
-    algebraFactory.createPool(tokenA, tokenB);
-    pool = IAlgebraPool(algebraFactory.poolByPair(tokenA, tokenB));
-    pool.initialize(getSqrtPrice(1 ether, 1656.62 ether));
-  }
-
-  function generateTickParams() public returns (int24 bottomTick, int24 topTick) {
-    (, int24 tick,,,,,) = pool.globalState();
-    int24 tickSpacing = pool.tickSpacing();
-    bottomTick = ((tick / tickSpacing) * tickSpacing) - 3 * tickSpacing;
-    topTick = ((tick / tickSpacing) * tickSpacing) + 3 * tickSpacing;
-  }
-
-  function getPoolBal(IAlgebraPool _pool) public view returns (uint256, uint256) {
-    (address t0, address t1) = getPoolPair(_pool);
-    address poolAddress = address(_pool);
-    return (IERC20(t0).balanceOf(poolAddress), IERC20(t1).balanceOf(poolAddress));
-  }
-
-  function getPoolPair(IAlgebraPool _pool) public view returns (address, address) {
-    return (_pool.token0(), _pool.token1());
+    algebraFactory.createPool(data.tokenA(), data.tokenB());
+    data.setPool(IAlgebraPool(algebraFactory.poolByPair(data.tokenA(), data.tokenB())));
+    data.pool().initialize(getSqrtPrice(1 ether, 1656.62 ether));
   }
 
   function getSqrtPrice(uint256 _initWethAmount, uint256 _initODAmount) public returns (uint160) {
@@ -103,7 +78,7 @@ contract DeployBase is Script {
   }
 
   // TODO test against isomate sqrt function
-  function sqrt(uint256 x) public returns (uint256 y) {
+  function sqrt(uint256 x) public pure returns (uint256 y) {
     uint256 z = (x + 1) / 2;
     y = x;
     while (z < y) {

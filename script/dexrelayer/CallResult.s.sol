@@ -1,25 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
+import {Data} from '@contracts/for-test/Data.sol';
 
 // BROADCAST
-// source .env && forge script CallResult --skip-simulation --with-gas-price 2000000000 -vvvvv --rpc-url $GOERLI_RPC --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+// source .env && forge script CallResult --skip-simulation --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
-// source .env && forge script CallResult --with-gas-price 2000000000 -vvvvv --rpc-url $GOERLI_RPC
+// source .env && forge script CallResult --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
 contract CallResult is Script {
-  uint256 private constant WAD = 1e18;
-  uint256 private constant MINT_AMOUNT = 1_000_000 ether;
-  uint256 private constant ORACLE_PERIOD = 1 seconds;
+  Data public data = Data(RELAYER_DATA);
 
-  IRelayer public relayer = IRelayer(0xd78607dfd7053014C44f10Ac4FD629EfDF086fe7);
+  IRelayer public relayer = data.relayer();
 
   function run() public {
-    vm.startBroadcast(vm.envUint('GOERLI_PK'));
+    vm.startBroadcast(vm.envUint('ARB_SEPOLIA_PK'));
     (
       uint160 price,
       int24 tick,
