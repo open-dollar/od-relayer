@@ -18,7 +18,7 @@ contract DeployRelayerFactory is Script {
    * @dev RelayerFactory must be deployed by deployer of protocol
    */
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_SEPOLIA_PK'));
+    vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
     relayerFactory = new RelayerFactory();
     vm.stopBroadcast();
   }

@@ -1,6 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+// Registry of protocol deployment
+address constant SEPOLIA_SYSTEM_COIN = address(0);
+address constant SEPOLIA_WETH = address(0);
+
+// Testnet Params
+uint256 constant ORACLE_PERIOD = 1 seconds;
+uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
+uint256 constant WAD = 1e18;
+uint256 constant MINT_AMOUNT = 1_000_000 ether;
+
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
@@ -8,11 +18,8 @@ address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 address constant RELAYER_DATA = 0x98A724ECA2804DE70Cae1f28E070D3973CAdcf05;
 
 // Camelot Relayer
+address constant CAMELOT_RELAYER_FACTORY = address(0); // from pre-deployment
 address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0;
-
-uint256 constant ORACLE_PERIOD = 1 seconds;
-uint256 constant WAD = 1e18;
-uint256 constant MINT_AMOUNT = 1_000_000 ether;
 
 // Algebra protocol
 address constant ALGEBRA_FACTORY = 0x21852176141b8D139EC5D3A1041cdC31F0F20b94;
