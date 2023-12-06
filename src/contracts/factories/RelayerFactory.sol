@@ -26,7 +26,7 @@ contract RelayerFactory is Authorizable {
     address _baseToken,
     address _quoteToken,
     uint32 _quotePeriod
-  ) external returns (IBaseOracle _relayer) {
+  ) external isAuthorized returns (IBaseOracle _relayer) {
     _relayer = IBaseOracle(address(new RelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
     _relayers.add(address(_relayer));
     emit NewAlgebraRelayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);

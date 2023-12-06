@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+// DAO
+address constant TEST_GOVERNOR = address(0);
+
 // Registry of protocol deployment
 address constant SEPOLIA_SYSTEM_COIN = address(0);
 address constant SEPOLIA_WETH = address(0);

@@ -3,12 +3,13 @@ pragma solidity 0.7.6;
 
 import 'forge-std/console2.sol';
 import '@script/Registry.s.sol';
-import {Script} from 'forge-std/Script.sol';
+import {Common} from '@script/Common.s.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 
 // BROADCAST
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
@@ -16,7 +17,7 @@ import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
 // SIMULATE
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract SetupPostEnvironment is Script {
+contract SetupPostEnvironment is Common {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(ALGEBRA_FACTORY);
   RelayerFactory public camelotRelayerFactory = RelayerFactory(CAMELOT_RELAYER_FACTORY);
 
@@ -49,6 +50,8 @@ contract SetupPostEnvironment is Script {
      * systemCoinOracle = denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
      * oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));
      */
+
+    _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR);
 
     vm.stopBroadcast();
   }
