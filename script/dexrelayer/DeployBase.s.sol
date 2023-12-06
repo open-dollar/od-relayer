@@ -71,7 +71,7 @@ contract DeployBase is Script {
     data.pool().initialize(getSqrtPrice(1 ether, 1656.62 ether));
   }
 
-  function getSqrtPrice(uint256 _initWethAmount, uint256 _initODAmount) public returns (uint160) {
+  function getSqrtPrice(uint256 _initWethAmount, uint256 _initODAmount) public pure returns (uint160) {
     uint256 price = (_initWethAmount * WAD) / _initODAmount;
     uint256 sqrtPriceX96 = sqrt(price * WAD) * (2 ** 96);
     return uint160(sqrtPriceX96);
