@@ -36,7 +36,4 @@ contract RelayerFactory is Authorizable {
     relayerById[relayerId] = address(_relayer);
     emit NewAlgebraRelayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);
   }
-
-  // --- Views ---
-  // TODO add getter function
 }

@@ -81,7 +81,7 @@ contract Unit_RelayerFactory_Constructor is Base {
 }
 
 contract Unit_RelayerFactory_DeployRelayer is Base {
-  event NewRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
+  event NewAlgebraRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
 
   modifier happyPath(string memory _symbol, uint8 _decimals) {
     vm.startPrank(authorizedAccount);
@@ -104,7 +104,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   }
 
   function test_Revert_Unauthorized(uint32 _quotePeriod) public {
-    vm.expectRevert('NotAuthorized');
+    vm.expectRevert('Unauthorized');
 
     relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
   }
@@ -131,7 +131,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   ) public happyPath(_symbol, _decimals) {
     relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
-    assertEq(relayerFactory.relayerById(0), address(relayerChild));
+    assertEq(relayerFactory.relayerById(1), address(relayerChild));
   }
 
   function test_Emit_NewRelayer(
@@ -140,7 +140,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
     vm.expectEmit();
-    emit NewRelayer(address(relayerChild), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    emit NewAlgebraRelayer(address(relayerChild), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
     relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
   }
