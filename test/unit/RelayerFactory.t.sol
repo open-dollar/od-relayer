@@ -17,7 +17,7 @@ abstract contract Base is DSTestPlus {
   address authorizedAccount = label('authorizedAccount');
   address user = label('user');
 
-  IAlgebraFactory mockAlgebraFactory = IAlgebraFactory(mockContract(ALGEBRA_FACTORY, 'UniswapV3Factory'));
+  IAlgebraFactory mockAlgebraFactory = IAlgebraFactory(mockContract(SEPOLIA_ALGEBRA_FACTORY, 'UniswapV3Factory'));
   IAlgebraPool mockAlgebraPool = IAlgebraPool(mockContract('UniswapV3Pool'));
   IERC20Metadata mockBaseToken = IERC20Metadata(mockContract('BaseToken'));
   IERC20Metadata mockQuoteToken = IERC20Metadata(mockContract('QuoteToken'));
@@ -106,7 +106,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   function test_Revert_Unauthorized(uint32 _quotePeriod) public {
     vm.expectRevert('Unauthorized');
 
-    relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
   }
 
   function test_Deploy_RelayerChild(
@@ -114,7 +114,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
     // assertEq(address(relayerChild).code, type(RelayerChild).runtimeCode);
 
@@ -129,7 +129,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
     assertEq(relayerFactory.relayerById(1), address(relayerChild));
   }
@@ -142,7 +142,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     vm.expectEmit();
     emit NewAlgebraRelayer(address(relayerChild), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
-    relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
   }
 
   function test_Return_Relayer(
@@ -153,7 +153,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     assertEq(
       address(
         relayerFactory.deployAlgebraRelayer(
-          ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+          SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
         )
       ),
       address(relayerChild)

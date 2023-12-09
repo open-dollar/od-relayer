@@ -42,7 +42,7 @@ contract DeployOracle is Script {
 
     // deploy camelot relayer
     address relayer =
-      address(relayerFactory.deployAlgebraRelayer(ALGEBRA_FACTORY, data.tokenA(), data.tokenB(), uint32(ORACLE_PERIOD)));
+      address(relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, data.tokenA(), data.tokenB(), uint32(ORACLE_PERIOD)));
     data.setRelayer(relayer);
 
     // deploy denominated oracle
