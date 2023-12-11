@@ -9,18 +9,21 @@ import {Authorizable} from '@contracts/utils/Authorizable.sol';
 contract RelayerFactory is Authorizable {
   using EnumerableSet for EnumerableSet.AddressSet;
 
+  uint256 public relayerId;
+
   // --- Events ---
   event NewAlgebraRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
 
   // --- Data ---
+  // TODO: remove enumerable set?
   EnumerableSet.AddressSet internal _relayers;
+  mapping(uint256 => address) public relayerById;
 
   // --- Init ---
   constructor() Authorizable(msg.sender) {}
 
   // --- Methods ---
 
-  // TODO: add access control
   function deployAlgebraRelayer(
     address _algebraV3Factory,
     address _baseToken,
@@ -29,9 +32,8 @@ contract RelayerFactory is Authorizable {
   ) external isAuthorized returns (IBaseOracle _relayer) {
     _relayer = IBaseOracle(address(new RelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
     _relayers.add(address(_relayer));
+    relayerId++;
+    relayerById[relayerId] = address(_relayer);
     emit NewAlgebraRelayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);
   }
-
-  // --- Views ---
-  // TODO add getter function
 }

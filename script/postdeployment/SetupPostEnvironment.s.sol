@@ -18,7 +18,7 @@ import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
 contract SetupPostEnvironment is Common {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
   RelayerFactory public camelotRelayerFactory = RelayerFactory(CAMELOT_RELAYER_FACTORY);
 
   function run() public {
@@ -42,7 +42,7 @@ contract SetupPostEnvironment is Common {
     IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
 
     IBaseOracle _odWethOracle = camelotRelayerFactory.deployAlgebraRelayer(
-      ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH, uint32(ORACLE_INTERVAL_TEST)
+      SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH, uint32(ORACLE_INTERVAL_TEST)
     );
 
     /**

@@ -21,7 +21,7 @@ import {Data} from '@contracts/for-test/Data.sol';
 
 contract DeployBase is Script {
   // Pool & Relayer Factories
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
 
   // Router
   Router public router;
