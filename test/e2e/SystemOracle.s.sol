@@ -16,9 +16,8 @@ import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {ChainlinkRelayer} from '@contracts/oracles/ChainlinkRelayer.sol';
 import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
-
-// add denominated oracle
-// import MATH, WAD from Math lib?
+import {DenominatedOracle} from '@contracts/oracles/DenominatedOracle.sol';
+import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
 
 /**
  * @dev ARBTIRUM_BLOCK == ETHEREUM_BLOCK
@@ -37,15 +36,20 @@ contract OracleSetup is DSTestPlus {
 
   // price w/ 18 decimals
   uint256 CHAINLINK_ETH_USD_PRICE_H = 2_218_500_000_000_000_000_000; // +1 USD
-  uint256 CHAINLINK_ETH_USD_PRICE_M = 2_217_500_000_000_000_000_000; // approx. price in USD
+  uint256 CHAINLINK_ETH_USD_PRICE_M = 2_217_500_000_000_000_000_000; // approx. price of ETH in USD
   uint256 CHAINLINK_ETH_USD_PRICE_L = 2_216_500_000_000_000_000_000; // -1 USD
 
   // price w/ 6 decimals
   int256 ETH_USD_PRICE_H = 221_850_000_000; // +1 USD
-  int256 ETH_USD_PRICE_M = 221_750_000_000; // approx. price in USD
+  int256 ETH_USD_PRICE_M = 221_750_000_000; // approx. price of ETH in USD
   int256 ETH_USD_PRICE_L = 221_650_000_000; // -1 USD
 
   uint256 CHAINLINK_ETH_ARB_PRICE = 965_000_000_000_000_000; // NOTE: 18 decimals
+
+  uint256 ETH_ARB_PRICE = 2_046_975_875_739_099_288_474; // price of ETH in ARB
+  uint256 ARB_ETH_PRICE = 488_525_542_412_135; // price of ARB in ETH
+  uint256 ARB_USD_PRICE = 1_083_214_437_815_195_905; // price of ARB in USD
+  uint256 USD_ARB_PRICE = 923_178_241_620_339_420; // price of USD in ARB
 
   // uint256 NEW_ETH_USD_PRICE = 200_000_000_000;
   // uint256 NEW_ETH_USD_PRICE_18_DECIMALS = 2_000_000_000_000_000_000_000;
@@ -54,8 +58,10 @@ contract OracleSetup is DSTestPlus {
 
   IBaseOracle public ethUsdPriceSource; // from Chainlink
   IBaseOracle public ethArbPriceSource; // from Camelot pool
+  IBaseOracle public arbEthPriceSource; // from Camelot pool
 
-  // IDenominatedOracle public wstethUsdPriceSource;
+  IDenominatedOracle public arbUsdPriceSource;
+  IDenominatedOracle public arbUsdPriceSourceInverted;
 
   /**
    * @dev Arbitrum block.number returns L1; createSelectFork does not work
@@ -68,11 +74,14 @@ contract OracleSetup is DSTestPlus {
     // --- Chainlink ---
     ethUsdPriceSource = IBaseOracle(address(new ChainlinkRelayer(CHAINLINK_ETH_USD_FEED, 1 days)));
 
-    // --- UniV3 ---
-    ethArbPriceSource = IBaseOracle(address(new Relayer(MAINNET_ALGEBRA_FACTORY, ETH, ARB, 1 days)));
+    // --- Camelot ---
+    arbEthPriceSource = IBaseOracle(address(new Relayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, 1 days))); // correct
+    ethArbPriceSource = IBaseOracle(address(new Relayer(MAINNET_ALGEBRA_FACTORY, ETH, ARB, 1 days))); // inverted
 
     // --- Denominated ---
-    // arbUsdPriceSource = new DenominatedOracle(wstethEthPriceSource, ethUsdPriceSource, false);
+    arbUsdPriceSource = IDenominatedOracle(address(new DenominatedOracle(arbEthPriceSource, ethUsdPriceSource, false)));
+    arbUsdPriceSourceInverted =
+      IDenominatedOracle(address(new DenominatedOracle(ethArbPriceSource, ethUsdPriceSource, true)));
   }
 
   function test_ArbitrumFork() public {
@@ -96,49 +105,42 @@ contract OracleSetup is DSTestPlus {
     assertEq(ethUsdPriceSource.symbol(), 'ETH / USD');
   }
 
-  // --- UniV3 ---
+  // --- Algebra ---
 
-  /**
-   * @dev This method may revert with 'OLD!' if the pool doesn't have enough cardinality or initialized history
-   */
-  // function test_UniV3Relayer() public {
-  //   assertEq(ethArbPriceSource.read(), WBTC_ETH_PRICE);
-  //   emit log_string('OLD; pool lacks cardinality or initialized history!');
-  // }
+  function test_Relayer() public {
+    assertEq(arbEthPriceSource.read(), ARB_ETH_PRICE);
+  }
 
-  // function test_UniV3RelayerSymbol() public {
-  //   assertEq(ethArbPriceSource.symbol(), 'CBETH / WSTETH');
-  // }
+  function test_RelayerSymbol() public {
+    assertEq(arbEthPriceSource.symbol(), 'ARB / WETH');
+  }
+
+  function test_Relayer_Inverted() public {
+    assertEq(ethArbPriceSource.read(), ETH_ARB_PRICE);
+  }
+
+  function test_RelayerSymbolInverted() public {
+    assertEq(ethArbPriceSource.symbol(), 'WETH / ARB');
+  }
 
   // --- Denominated ---
 
-  /**
-   * @dev This method may revert with 'OLD!' if the pool doesn't have enough cardinality or initialized history
-   */
-  // function test_DenominatedOracleUniV3() public {
-  //   assertEq(WBTC_USD_PRICE / 1e18, 27_032); // 14.864 * 1818.65 = 27032
-  //   assertEq(wbtcUsdPriceSource.read(), WBTC_USD_PRICE);
-  //   emit log_string('OLD; pool lacks cardinality or initialized history!');
-  // }
+  function test_DenominatedOracle() public {
+    assertEq(arbUsdPriceSource.read(), ARB_USD_PRICE);
+  }
 
-  // function test_DenominatedOracleSymbol() public {
-  //   // assertEq(wstethUsdPriceSource.symbol(), '(WSTETH / ETH) * (ETH / USD)');
-  //   emit log_string('(wstETH-stETH Exchange Rate) * (ETH / USD) => should be: (WSTETH / ETH) * (ETH / USD)');
-  // }
+  function test_DenominatedOracleSymbol() public {
+    assertEq(arbUsdPriceSource.symbol(), '(ARB / WETH) * (ETH / USD)');
+  }
 
-  /**
-   * NOTE: In this case, the symbols are ETH/USD - ETH/USD
-   *       Using inverted = true, the resulting symbols are USD/ETH - ETH/USD
-   */
-  // function test_DenominatedOracleInverted() public {
-  //   IDenominatedOracle usdPriceSource = new DenominatedOracle(ethUsdPriceSource, ethUsdPriceSource, true);
+  function test_DenominatedInvertedOracle() public {
+    assertEq(arbUsdPriceSourceInverted.read(), ARB_USD_PRICE);
+  }
 
-  //   assertApproxEqAbs(usdPriceSource.read(), WAD, 1e9); // 1 USD = 1 USD (with 18 decimals)
-  // }
+  function test_DenominatedOracleInvertedSymbol() public {
+    IDenominatedOracle arbUsdPriceSourceInvert =
+      IDenominatedOracle(address(new DenominatedOracle(ethArbPriceSource, ethUsdPriceSource, true)));
 
-  // function test_DenominatedOracleInvertedSymbol() public {
-  //   IDenominatedOracle usdPriceSource = new DenominatedOracle(ethUsdPriceSource, ethUsdPriceSource, true);
-
-  //   assertEq(usdPriceSource.symbol(), '(ETH / USD)^-1 / (ETH / USD)');
-  // }
+    assertEq(arbUsdPriceSourceInvert.symbol(), '(WETH / ARB)^-1 / (ETH / USD)');
+  }
 }
