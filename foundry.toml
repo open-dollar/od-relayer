@@ -13,3 +13,7 @@ auto_detect_solc = true
 src = "src"
 out = "out"
 libs = ["lib"]
+
+[rpc_endpoints]
+mainnet = "${ARB_MAINNET_RPC}"
+sepolia = "${ARB_SEPOLIA_RPC}"

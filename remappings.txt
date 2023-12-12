@@ -6,7 +6,8 @@
 @algebra-periphery/=lib/AlgebraV1.9/src/periphery/contracts/
 @algebra-tokenomics/=lib/AlgebraV1.9/src/tokenomics/contracts/
 
+@script/=script/
 @contracts/=src/contracts/
 @interfaces/=src/interfaces/
-@script/=script/
+@libraries/=src/libraries/
 @test/=test/
