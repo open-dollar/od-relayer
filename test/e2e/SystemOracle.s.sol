@@ -19,6 +19,8 @@ import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 import {DenominatedOracle} from '@contracts/oracles/DenominatedOracle.sol';
 import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
 
+// forge test --match-contract OracleSetup -vvv
+
 /**
  * @dev ARBTIRUM_BLOCK == ETHEREUM_BLOCK
  * rollFork is set to ARBTIRUM_BLOCK, however
