@@ -51,11 +51,6 @@ contract OracleSetup is DSTestPlus {
   uint256 ARB_USD_PRICE = 1_083_214_437_815_195_905; // price of ARB in USD
   uint256 USD_ARB_PRICE = 923_178_241_620_339_420; // price of USD in ARB
 
-  // uint256 NEW_ETH_USD_PRICE = 200_000_000_000;
-  // uint256 NEW_ETH_USD_PRICE_18_DECIMALS = 2_000_000_000_000_000_000_000;
-
-  // CHANGED time
-
   IBaseOracle public ethUsdPriceSource; // from Chainlink
   IBaseOracle public ethArbPriceSource; // from Camelot pool
   IBaseOracle public arbEthPriceSource; // from Camelot pool
