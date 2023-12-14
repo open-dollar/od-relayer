@@ -8,6 +8,12 @@ concurrency:
 
 env:
   FOUNDRY_PROFILE: ci
+  OP_MAINNET_RPC: ${{ secrets.OP_MAINNET_RPC }}
+  OP_GOERLI_RPC: ${{ secrets.OP_GOERLI_RPC }}
+  OP_MAINNET_DEPLOYER_PK: ${{ secrets.TEST_DEPLOYER_PK }}
+  OP_GOERLI_DEPLOYER_PK: ${{ secrets.TEST_DEPLOYER_PK }}
+  ARB_GOERLI_RPC: ${{ secrets.ARB_GOERLI_RPC }}
+  ARB_MAINNET_RPC: ${{ secrets.ARB_MAINNET_RPC }}
 
 jobs:
   check:
@@ -31,17 +37,6 @@ jobs:
           forge --version
           forge build --sizes
         id: build
-
-      - name: Create env file
-        run: |
-          touch .env
-          echo OP_MAINNET_RPC="${{ secrets.OP_MAINNET_RPC }}" >> .env
-          echo OP_GOERLI_RPC="${{ secrets.OP_GOERLI_RPC }}" >> .env
-          echo OP_MAINNET_DEPLOYER_PK="${{ secrets.TEST_DEPLOYER_PK }}" >> .env
-          echo OP_GOERLI_DEPLOYER_PK="${{ secrets.TEST_DEPLOYER_PK }}" >> .env
-          echo ARB_GOERLI_RPC="${{ secrets.ARB_GOERLI_RPC }}" >> .env
-          echo ARB_MAINNET_RPC="${{ secrets.ARB_MAINNET_RPC }}" >> .env
-          cat .env
 
       - name: Run Forge tests
         run: |
