@@ -45,9 +45,10 @@ contract SetupPostEnvironment is Common {
       SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH, uint32(ORACLE_INTERVAL_TEST)
     );
 
+    // deploy systemOracle
+    denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
+
     /**
-     * TODO: set denominated oracle to (_odWethOracle + chainlink ETH/USD)
-     * systemCoinOracle = denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
      * oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));
      */
 
