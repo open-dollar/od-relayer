@@ -24,6 +24,13 @@ address constant RELAYER_DATA = 0x98A724ECA2804DE70Cae1f28E070D3973CAdcf05;
 address constant CAMELOT_RELAYER_FACTORY = address(0); // from pre-deployment
 address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0;
 
+// Chainlink Relayer
+address constant CHAINLINK_RELAYER_FACTORY = address(0); // from pre-deployment
+uint256 constant TEST_STALE_THRESHOLD = 1 minutes;
+
+// Denominated Oracle
+address constant DENOMINATED_ORACLE_FACTORY = address(0); // from pre-deployment
+
 // Chainlink feeds
 address constant SEPOLIA_CHAINLINK_ETH_USD_FEED = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
 address constant SEPOLIA_CHAINLINK_ARB_USD_FEED = 0xD1092a65338d049DB68D7Be6bD89d17a0929945e;
