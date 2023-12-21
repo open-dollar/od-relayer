@@ -12,6 +12,7 @@ import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
+import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
 // BROADCAST
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
@@ -27,8 +28,13 @@ contract SetupPostEnvironment is Common {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
-    algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
-    address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
+    MintableERC20 mockWeth = new MintableERC20('Wrapped ETH', 'WETH', 18);
+
+    // algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
+    // address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
+
+    algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, address(mockWeth));
+    address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
 
     IERC20Metadata _token0 = IERC20Metadata(IAlgebraPool(_pool).token0());
     IERC20Metadata _token1 = IERC20Metadata(IAlgebraPool(_pool).token1());
@@ -37,32 +43,37 @@ contract SetupPostEnvironment is Common {
     require(keccak256(abi.encodePacked('WETH')) == keccak256(abi.encodePacked(_token1.symbol())), '!WETH');
 
     uint256 initWethAmount = 1 ether;
-    uint256 initODAmount = 1656.62 ether;
+    uint256 initODAmount = 2221.3997 ether;
 
-    uint256 _price = (initWethAmount * WAD) / initODAmount;
-    uint256 _sqrtPriceX96 = sqrt(_price * WAD) * (2 ** 96);
-    console2.logUint((_sqrtPriceX96 / (2 ** 96)) ** 2);
+    uint256 _price = ((initWethAmount * WAD) / initODAmount);
+    console2.logUint(uint160(sqrt(_price) * (2 ** 96)));
+
+    // uint256 _sqrtPriceX96 = sqrt(_price * WAD) * (2 ** 96);
+    uint256 _sqrtPriceX96 = sqrt(_price) * (2 ** 96);
 
     IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
 
-    // TODO: check setup against oracle / relayer tests
     IBaseOracle _odWethOracle = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH, uint32(ORACLE_INTERVAL_TEST)
     );
 
-    // TODO: check setup against oracle / relayer tests
     IBaseOracle chainlinkEthUSDPriceFeed =
-      chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, TEST_STALE_THRESHOLD);
+      chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, ORACLE_INTERVAL_TEST);
 
-    // TODO: check setup against oracle / relayer tests
-    // deploy systemOracle
+    deploy systemOracle
     denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
 
-    /**
-     * oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));
-     */
+    uint256 p = _odWethOracle.read();
+    console2.logUint(p);
 
-    _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR);
+    // _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+    // _revoke(IAuthorizable(address(chainlinkRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+    // _revoke(IAuthorizable(address(denominatedOracleFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+
+    // this happens in od-contracts
+    // oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));
+
+    // TODO: check setup against oracle / relayer tests
 
     vm.stopBroadcast();
   }
@@ -76,3 +87,5 @@ contract SetupPostEnvironment is Common {
     }
   }
 }
+
+//603637134542053667729652226420066060012957550254662

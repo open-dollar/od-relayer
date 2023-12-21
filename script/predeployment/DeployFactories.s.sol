@@ -8,15 +8,15 @@ import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFact
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
 // BROADCAST
-// source .env && forge script DeployRelayerFactory --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+// source .env && forge script DeployFactories --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
-// source .env && forge script DeployRelayerFactory --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
+// source .env && forge script DeployFactories --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract DeployRelayerFactory is Script {
+contract DeployFactories is Script {
   RelayerFactory public camelotRelayerFactory;
   ChainlinkRelayerFactory public chainlinkRelayerFactory;
-  DenominatedOracleFactory public denominatedOracleFactory;
+  DenominatedOracleFactory public denominatedOraclFactory;
 
   /**
    * @dev RelayerFactory must be deployed by deployer of protocol
@@ -25,7 +25,7 @@ contract DeployRelayerFactory is Script {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
     camelotRelayerFactory = new RelayerFactory();
     chainlinkRelayerFactory = new ChainlinkRelayerFactory();
-    denominatedOracleFactory = new DenominatedOracleFactory();
+    denominatedOraclFactory = new DenominatedOracleFactory();
     vm.stopBroadcast();
   }
 }
