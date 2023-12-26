@@ -8,9 +8,6 @@ import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
-import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
-import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
@@ -22,9 +19,6 @@ import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
 contract SetupPostEnvironment is Common {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
-  RelayerFactory public camelotRelayerFactory = RelayerFactory(CAMELOT_RELAYER_FACTORY);
-  ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(CHAINLINK_RELAYER_FACTORY);
-  DenominatedOracleFactory public denominatedOracleFactory = DenominatedOracleFactory(DENOMINATED_ORACLE_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));

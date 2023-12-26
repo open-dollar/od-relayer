@@ -11,7 +11,7 @@ import {
   ETH_ARB_POOL
 } from '@script/Registry.s.sol';
 import {DSTestPlus} from '@test/utils/DSTestPlus.t.sol';
-import {Relayer} from '@contracts/oracles/Relayer.sol';
+import {CamelotRelayer} from '@contracts/oracles/CamelotRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {ChainlinkRelayer} from '@contracts/oracles/ChainlinkRelayer.sol';
@@ -72,8 +72,8 @@ contract OracleSetup is DSTestPlus {
     ethUsdPriceSource = IBaseOracle(address(new ChainlinkRelayer(CHAINLINK_ETH_USD_FEED, 1 days)));
 
     // --- Camelot ---
-    arbEthPriceSource = IBaseOracle(address(new Relayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, 1 days))); // correct
-    ethArbPriceSource = IBaseOracle(address(new Relayer(MAINNET_ALGEBRA_FACTORY, ETH, ARB, 1 days))); // inverted
+    arbEthPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, 1 days))); // correct
+    ethArbPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ETH, ARB, 1 days))); // inverted
 
     // --- Denominated ---
     arbUsdPriceSource = IDenominatedOracle(address(new DenominatedOracle(arbEthPriceSource, ethUsdPriceSource, false)));
