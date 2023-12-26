@@ -4,12 +4,12 @@ pragma solidity 0.7.6;
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
 abstract contract Common is Script {
-  RelayerFactory public camelotRelayerFactory = RelayerFactory(CAMELOT_RELAYER_FACTORY);
+  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(CAMELOT_RELAYER_FACTORY);
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(CHAINLINK_RELAYER_FACTORY);
   DenominatedOracleFactory public denominatedOracleFactory = DenominatedOracleFactory(DENOMINATED_ORACLE_FACTORY);
 

@@ -4,7 +4,7 @@ pragma solidity 0.7.6;
 import {CamelotRelayer} from '@contracts/oracles/CamelotRelayer.sol';
 import {FactoryChild} from '@contracts/factories/FactoryChild.sol';
 
-contract RelayerChild is CamelotRelayer, FactoryChild {
+contract CamelotRelayerChild is CamelotRelayer, FactoryChild {
   // --- Init ---
   constructor(
     address _algebraV3Factory,

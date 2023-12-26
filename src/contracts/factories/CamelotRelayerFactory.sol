@@ -3,10 +3,10 @@ pragma solidity 0.7.6;
 
 import {EnumerableSet} from '@openzeppelin/contracts/utils/EnumerableSet.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
-import {RelayerChild} from '@contracts/factories/RelayerChild.sol';
+import {CamelotRelayerChild} from '@contracts/factories/CamelotRelayerChild.sol';
 import {Authorizable} from '@contracts/utils/Authorizable.sol';
 
-contract RelayerFactory is Authorizable {
+contract CamelotRelayerFactory is Authorizable {
   using EnumerableSet for EnumerableSet.AddressSet;
 
   uint256 public relayerId;
@@ -30,7 +30,7 @@ contract RelayerFactory is Authorizable {
     address _quoteToken,
     uint32 _quotePeriod
   ) external isAuthorized returns (IBaseOracle _relayer) {
-    _relayer = IBaseOracle(address(new RelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
+    _relayer = IBaseOracle(address(new CamelotRelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
     _relayers.add(address(_relayer));
     relayerId++;
     relayerById[relayerId] = address(_relayer);

@@ -7,9 +7,9 @@ import {DSTestPlus} from '@test/utils/DSTestPlus.t.sol';
 import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {IRelayerFactory} from '@interfaces/factories/IRelayerFactory.sol';
-import {RelayerChild} from '@contracts/factories/RelayerChild.sol';
+import {CamelotRelayerChild} from '@contracts/factories/CamelotRelayerChild.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 
 abstract contract Base is DSTestPlus {
@@ -22,15 +22,15 @@ abstract contract Base is DSTestPlus {
   IERC20Metadata mockBaseToken = IERC20Metadata(mockContract('BaseToken'));
   IERC20Metadata mockQuoteToken = IERC20Metadata(mockContract('QuoteToken'));
 
-  RelayerFactory relayerFactory;
-  RelayerChild relayerChild =
-    RelayerChild(label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'RelayerChild'));
+  CamelotRelayerFactory relayerFactory;
+  CamelotRelayerChild relayerChild =
+    CamelotRelayerChild(label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild'));
 
   function setUp() public virtual {
     vm.startPrank(deployer);
 
-    relayerFactory = new RelayerFactory();
-    label(address(relayerFactory), 'RelayerFactory');
+    relayerFactory = new CamelotRelayerFactory();
+    label(address(relayerFactory), 'CamelotRelayerFactory');
 
     relayerFactory.addAuthorization(authorizedAccount);
 
@@ -76,7 +76,7 @@ contract Unit_RelayerFactory_Constructor is Base {
     vm.expectEmit();
     emit AddAuthorization(user);
 
-    relayerFactory = new RelayerFactory();
+    relayerFactory = new CamelotRelayerFactory();
   }
 }
 
@@ -116,7 +116,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   ) public happyPath(_symbol, _decimals) {
     relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
-    // assertEq(address(relayerChild).code, type(RelayerChild).runtimeCode);
+    // assertEq(address(relayerChild).code, type(CamelotRelayerChild).runtimeCode);
 
     // params
     assertEq(relayerChild.baseToken(), address(mockBaseToken));

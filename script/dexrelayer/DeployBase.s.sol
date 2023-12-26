@@ -5,7 +5,7 @@ import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';

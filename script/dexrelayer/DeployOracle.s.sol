@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
@@ -27,7 +27,7 @@ contract DeployOracle is Script {
   // IBaseOracle public denominatedOracle;
 
   // ChainlinkRelayerFactory public chainlinkRelayerFactory;
-  RelayerFactory public relayerFactory;
+  CamelotRelayerFactory public relayerFactory;
   // DenominatedOracleFactory public denominatedOracleFactory;
 
   function run() public {
@@ -57,7 +57,7 @@ contract DeployOracle is Script {
    */
   function deployFactories() public {
     // chainlinkRelayerFactory = new ChainlinkRelayerFactory();
-    relayerFactory = new RelayerFactory();
+    relayerFactory = new CamelotRelayerFactory();
     // denominatedOracleFactory = new DenominatedOracleFactory();
   }
 }

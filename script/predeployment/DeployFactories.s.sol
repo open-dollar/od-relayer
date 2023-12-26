@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
-import {RelayerFactory} from '@contracts/factories/RelayerFactory.sol';
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
@@ -14,16 +14,16 @@ import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFa
 // source .env && forge script DeployFactories --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
 contract DeployFactories is Script {
-  RelayerFactory public camelotRelayerFactory;
+  CamelotRelayerFactory public camelotRelayerFactory;
   ChainlinkRelayerFactory public chainlinkRelayerFactory;
   DenominatedOracleFactory public denominatedOraclFactory;
 
   /**
-   * @dev RelayerFactory must be deployed by deployer of protocol
+   * @dev CamelotRelayerFactory must be deployed by deployer of protocol
    */
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
-    camelotRelayerFactory = new RelayerFactory();
+    camelotRelayerFactory = new CamelotRelayerFactory();
     chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     denominatedOraclFactory = new DenominatedOracleFactory();
     vm.stopBroadcast();
