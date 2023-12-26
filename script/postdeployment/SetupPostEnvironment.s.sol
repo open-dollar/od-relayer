@@ -60,20 +60,15 @@ contract SetupPostEnvironment is Common {
     IBaseOracle chainlinkEthUSDPriceFeed =
       chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, ORACLE_INTERVAL_TEST);
 
-    deploy systemOracle
+    // deploy systemOracle
     denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
 
-    uint256 p = _odWethOracle.read();
-    console2.logUint(p);
+    revokeFactories();
 
-    // _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
-    // _revoke(IAuthorizable(address(chainlinkRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
-    // _revoke(IAuthorizable(address(denominatedOracleFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
-
-    // this happens in od-contracts
-    // oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));
-
-    // TODO: check setup against oracle / relayer tests
+    /**
+     * note oracleRelayer will be set to systemOracle in odContracts post deploy script
+     * code: `oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));`
+     */
 
     vm.stopBroadcast();
   }
@@ -87,5 +82,3 @@ contract SetupPostEnvironment is Common {
     }
   }
 }
-
-//603637134542053667729652226420066060012957550254662

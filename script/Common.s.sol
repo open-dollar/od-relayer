@@ -10,4 +10,10 @@ abstract contract Common is Script {
     _contract.addAuthorization(_authorize);
     _contract.removeAuthorization(_deauthorize);
   }
+
+  function revokeFactories() external {
+    _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+    _revoke(IAuthorizable(address(chainlinkRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+    _revoke(IAuthorizable(address(densominatedOracleFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+  }
 }
