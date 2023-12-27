@@ -4,11 +4,11 @@ pragma solidity 0.7.6;
 import 'forge-std/console2.sol';
 import '@script/Registry.s.sol';
 import {Common} from '@script/Common.s.sol';
+import {Sqrt} from '@algebra-core/libraries/Sqrt.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
-import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
 // BROADCAST
@@ -40,10 +40,10 @@ contract SetupPostEnvironment is Common {
     uint256 initODAmount = 2221.3997 ether;
 
     uint256 _price = ((initWethAmount * WAD) / initODAmount);
-    console2.logUint(uint160(sqrt(_price) * (2 ** 96)));
+    console2.logUint(uint160(Sqrt.sqrtAbs(int256(_price)) * (2 ** 96)));
 
     // uint256 _sqrtPriceX96 = sqrt(_price * WAD) * (2 ** 96);
-    uint256 _sqrtPriceX96 = sqrt(_price) * (2 ** 96);
+    uint256 _sqrtPriceX96 = Sqrt.sqrtAbs(int256(_price)) * (2 ** 96);
 
     IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
 
@@ -65,14 +65,5 @@ contract SetupPostEnvironment is Common {
      */
 
     vm.stopBroadcast();
-  }
-
-  function sqrt(uint256 x) public pure returns (uint256 y) {
-    uint256 z = (x + 1) / 2;
-    y = x;
-    while (z < y) {
-      y = z;
-      z = (x / z + z) / 2;
-    }
   }
 }
