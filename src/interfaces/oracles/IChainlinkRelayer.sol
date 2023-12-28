@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
-interface IChainlinkOracle {
+interface IChainlinkRelayer {
   function decimals() external view returns (uint8 _decimals);
   function description() external view returns (string memory _description);
   function getAnswer(uint256 _roundId) external view returns (int256 _answer);

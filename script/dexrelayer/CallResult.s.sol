@@ -4,7 +4,7 @@ pragma solidity 0.7.6;
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
-import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
+import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
 import {Data} from '@contracts/for-test/Data.sol';
 
 // BROADCAST
@@ -16,7 +16,7 @@ import {Data} from '@contracts/for-test/Data.sol';
 contract CallResult is Script {
   Data public data = Data(RELAYER_DATA);
 
-  IRelayer public relayer = data.relayer();
+  ICamelotRelayer public relayer = data.camelotRelayer();
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_PK'));
