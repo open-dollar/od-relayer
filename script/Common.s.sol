@@ -16,15 +16,22 @@ abstract contract Common is Script {
   CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(CAMELOT_RELAYER_FACTORY);
   DenominatedOracleFactory public denominatedOracleFactory = DenominatedOracleFactory(DENOMINATED_ORACLE_FACTORY);
 
+  IAuthorizable public chainlinkRelayerFactoryAuth = IAuthorizable(CHAINLINK_RELAYER_FACTORY);
+  IAuthorizable public camelotRelayerFactoryAuth = IAuthorizable(CAMELOT_RELAYER_FACTORY);
+  IAuthorizable public denominatedOracleFactoryAuth = IAuthorizable(DENOMINATED_ORACLE_FACTORY);
+
+  address public deployer = vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC');
+  address public admin = vm.envAddress('ARB_SEPOLIA_PC');
+
   function _revoke(IAuthorizable _contract, address _authorize, address _deauthorize) internal {
     _contract.addAuthorization(_authorize);
     _contract.removeAuthorization(_deauthorize);
   }
 
   function revokeFactories() internal {
-    _revoke(IAuthorizable(address(chainlinkRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
-    _revoke(IAuthorizable(address(camelotRelayerFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
-    _revoke(IAuthorizable(address(denominatedOracleFactory)), TEST_GOVERNOR, vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC'));
+    _revoke(chainlinkRelayerFactoryAuth, TEST_GOVERNOR, deployer);
+    _revoke(camelotRelayerFactoryAuth, TEST_GOVERNOR, deployer);
+    _revoke(denominatedOracleFactoryAuth, TEST_GOVERNOR, deployer);
   }
 
   // basePrice = OD, quotePrice = WETH
@@ -53,8 +60,14 @@ abstract contract Common is Script {
    * note FOR TEST
    */
   function authOnlyFactories() internal {
-    IAuthorizable(address(chainlinkRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
-    IAuthorizable(address(camelotRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
-    IAuthorizable(address(denominatedOracleFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
+    if (!chainlinkRelayerFactoryAuth.authorizedAccounts(admin)) {
+      chainlinkRelayerFactoryAuth.addAuthorization(admin);
+    }
+    if (!camelotRelayerFactoryAuth.authorizedAccounts(admin)) {
+      camelotRelayerFactoryAuth.addAuthorization(admin);
+    }
+    if (!denominatedOracleFactoryAuth.authorizedAccounts(admin)) {
+      denominatedOracleFactoryAuth.addAuthorization(admin);
+    }
   }
 }
