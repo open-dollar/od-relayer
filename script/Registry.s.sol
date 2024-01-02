@@ -2,27 +2,36 @@
 pragma solidity 0.7.6;
 
 // DAO
-address constant TEST_GOVERNOR = address(0);
+address constant TEST_GOVERNOR = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
 // Registry of protocol deployment
-address constant SEPOLIA_SYSTEM_COIN = address(0);
-address constant SEPOLIA_WETH = address(0);
+address constant SEPOLIA_SYSTEM_COIN = 0x94beB5fC16824338Eaa538c3c857D7f7fFf4B2Ce;
+address constant SEPOLIA_WETH = 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73;
 
 // Testnet Params
 uint256 constant ORACLE_PERIOD = 1 seconds;
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant WAD = 1e18;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
+uint256 constant INIT_WETH_AMOUNT = 1 ether;
+uint256 constant INIT_OD_AMOUNT = 2230 ether;
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
-// Data for dexrelayer script (for test)
-address constant RELAYER_DATA = 0x98A724ECA2804DE70Cae1f28E070D3973CAdcf05;
+// Data for dexrelayer script (for test) and Router for AlgebraPool
+address constant RELAYER_DATA = 0x91A35Ad2f71C25eB84A19eD27f12c362920b1DB2;
+address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
 
 // Camelot Relayer
-address constant CAMELOT_RELAYER_FACTORY = address(0); // from pre-deployment
+address constant CAMELOT_RELAYER_FACTORY = 0x9a8E0E6611EC9ebd5A2c8168A2f808e0206d85E4; // from pre-deployment
 address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0;
+
+// Chainlink Relayer
+address constant CHAINLINK_RELAYER_FACTORY = 0x12383AFE7d8590fC820bEDfdf41174ADff66210a; // from pre-deployment
+
+// Denominated Oracle
+address constant DENOMINATED_ORACLE_FACTORY = 0xe96060D7f58A51B82595cF21dB1BE5097FB65A32; // from pre-deployment
 
 // Chainlink feeds
 address constant SEPOLIA_CHAINLINK_ETH_USD_FEED = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;

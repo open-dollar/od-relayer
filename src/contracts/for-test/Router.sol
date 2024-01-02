@@ -26,7 +26,7 @@ contract Router is IAlgebraMintCallback {
     (amount0, amount1, liquidityActual) = pool.mint(owner, address(pool), _bottomTick, _topTick, _amount, '');
   }
 
-  function algebraMintCallback(uint256 amount0Owed, uint256 amount1Owed, bytes calldata data) external override {
+  function algebraMintCallback(uint256 amount0Owed, uint256 amount1Owed, bytes calldata) external override {
     require(address(pool) == msg.sender, 'Pool not authorized');
     tokenA.transferFrom(owner, address(pool), amount0Owed);
     tokenB.transferFrom(owner, address(pool), amount1Owed);

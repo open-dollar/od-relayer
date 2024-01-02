@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
-import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
+import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
 
 /**
  * @title  ChainlinkRelayer
@@ -11,7 +11,7 @@ import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 contract ChainlinkRelayer {
   // --- Registry ---
 
-  IChainlinkOracle public chainlinkFeed;
+  IChainlinkRelayer public chainlinkFeed;
 
   // --- Data ---
 
@@ -30,7 +30,7 @@ contract ChainlinkRelayer {
     require(_staleThreshold != 0, 'NullStaleThreshold');
 
     staleThreshold = _staleThreshold;
-    chainlinkFeed = IChainlinkOracle(_aggregator);
+    chainlinkFeed = IChainlinkRelayer(_aggregator);
 
     multiplier = 18 - chainlinkFeed.decimals();
     symbol = chainlinkFeed.description();

@@ -7,7 +7,7 @@ import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IDataStorageOperator} from '@algebra-core/interfaces/IDataStorageOperator.sol';
 import {DataStorageLibrary} from '@algebra-periphery/libraries/DataStorageLibrary.sol';
 
-contract Relayer {
+contract CamelotRelayer {
   address public algebraPool;
   address public baseToken;
   address public quoteToken;
