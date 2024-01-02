@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
-interface IRelayer is IBaseOracle {
+interface ICamelotRelayer is IBaseOracle {
   /**
    * @dev Address of the AlgebraPair used to consult the TWAP
    */

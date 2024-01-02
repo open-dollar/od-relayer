@@ -16,7 +16,7 @@ import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFa
 contract DeployFactories is Script {
   CamelotRelayerFactory public camelotRelayerFactory;
   ChainlinkRelayerFactory public chainlinkRelayerFactory;
-  DenominatedOracleFactory public denominatedOraclFactory;
+  DenominatedOracleFactory public denominatedOracleFactory;
 
   /**
    * @dev CamelotRelayerFactory must be deployed by deployer of protocol
@@ -25,7 +25,7 @@ contract DeployFactories is Script {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
     camelotRelayerFactory = new CamelotRelayerFactory();
     chainlinkRelayerFactory = new ChainlinkRelayerFactory();
-    denominatedOraclFactory = new DenominatedOracleFactory();
+    denominatedOracleFactory = new DenominatedOracleFactory();
     vm.stopBroadcast();
   }
 }
