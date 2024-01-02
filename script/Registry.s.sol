@@ -13,6 +13,8 @@ uint256 constant ORACLE_PERIOD = 1 seconds;
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant WAD = 1e18;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
+uint256 constant INIT_WETH_AMOUNT = 1 ether;
+uint256 constant INIT_OD_AMOUNT = 2230 ether;
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;

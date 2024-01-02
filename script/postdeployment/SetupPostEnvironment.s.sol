@@ -20,18 +20,12 @@ contract SetupPostEnvironment is Common {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
-    MintableERC20 mockWeth = new MintableERC20('Wrapped ETH', 'WETH', 18);
 
-    // algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
-    // address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
+    algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
+    address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, SEPOLIA_WETH);
 
-    algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, address(mockWeth));
-    address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
+    uint160 _sqrtPriceX96 = initialPrice(INIT_OD_AMOUNT, INIT_WETH_AMOUNT, _pool);
 
-    uint256 _initWethAmount = 1 ether;
-    uint256 _initODAmount = 2230 ether;
-
-    uint160 _sqrtPriceX96 = initialPrice(_initODAmount, _initWethAmount, _pool);
     IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
 
     // Todo: change to WETH for next deployment
@@ -45,13 +39,47 @@ contract SetupPostEnvironment is Common {
     // deploy systemOracle
     denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
 
-    // revokeFactories(); // for mainnet
-    // authOnlyFactories(); // for testnet
+    revokeFactories();
 
     /**
      * note oracleRelayer will be set to systemOracle in odContracts post deploy script
      * code: `oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));`
      */
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script MockSetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script MockSetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
+
+contract MockSetupPostEnvironment is Common {
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
+
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
+    MintableERC20 mockWeth = new MintableERC20('Wrapped ETH', 'WETH', 18);
+
+    algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, address(mockWeth));
+    address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
+
+    uint160 _sqrtPriceX96 = initialPrice(INIT_OD_AMOUNT, INIT_WETH_AMOUNT, _pool);
+    IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
+
+    IBaseOracle _odWethOracle = camelotRelayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, address(mockWeth), uint32(ORACLE_INTERVAL_TEST)
+    );
+
+    IBaseOracle chainlinkEthUSDPriceFeed =
+      chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, ORACLE_INTERVAL_TEST);
+
+    // deploy systemOracle
+    denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
+
+    authOnlyFactories();
 
     vm.stopBroadcast();
   }
