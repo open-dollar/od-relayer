@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
-import {EnumerableSet} from '@openzeppelin/contracts/utils/EnumerableSet.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {DenominatedOracleChild} from '@contracts/factories/DenominatedOracleChild.sol';
 import {Authorizable} from '@contracts/utils/Authorizable.sol';
 
 contract DenominatedOracleFactory is Authorizable {
-  using EnumerableSet for EnumerableSet.AddressSet;
-
   uint256 public oracleId;
 
   // --- Events ---
@@ -17,7 +14,6 @@ contract DenominatedOracleFactory is Authorizable {
   );
 
   // --- Data ---
-  EnumerableSet.AddressSet internal _denominatedOracles;
   mapping(uint256 => address) public oracleById;
 
   // --- Init ---
@@ -32,7 +28,6 @@ contract DenominatedOracleFactory is Authorizable {
   ) external isAuthorized returns (IBaseOracle _denominatedOracle) {
     _denominatedOracle =
       IBaseOracle(address(new DenominatedOracleChild(_priceSource, _denominationPriceSource, _inverted)));
-    _denominatedOracles.add(address(_denominatedOracle));
     oracleId++;
     oracleById[oracleId] = address(_denominatedOracle);
     emit NewDenominatedOracle(

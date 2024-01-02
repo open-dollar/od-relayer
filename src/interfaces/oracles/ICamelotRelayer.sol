@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
-interface IRelayer is IBaseOracle {
+interface ICamelotRelayer is IBaseOracle {
   /**
    * @dev Address of the AlgebraPair used to consult the TWAP
    */
@@ -27,7 +27,7 @@ interface IRelayer is IBaseOracle {
   /**
    * @dev The multiplier used to convert the quote into an 18 decimals format
    */
-  function multiplier() external view returns (uint256 _multiplier);
+  function multiplier() external view returns (int256 _multiplier);
 
   /**
    * @dev The length of the TWAP used to consult the pool

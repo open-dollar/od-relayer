@@ -3,7 +3,9 @@ pragma solidity 0.7.6;
 
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
+import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
+import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
+import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
 
 contract Data {
   // Tokens
@@ -13,8 +15,10 @@ contract Data {
   // Pool
   IAlgebraPool public pool;
 
-  //
-  IRelayer public relayer;
+  // Relayers
+  IChainlinkRelayer public chainlinkRelayer;
+  ICamelotRelayer public camelotRelayer;
+  IDenominatedOracle public denominatedOracle;
 
   function getPoolBal() public view returns (uint256, uint256) {
     (address t0, address t1) = getPoolPair();
@@ -42,7 +46,15 @@ contract Data {
     pool = _pool;
   }
 
-  function setRelayer(address _relayer) public {
-    relayer = IRelayer(_relayer);
+  function setChainlinkRelayer(address _relayer) public {
+    chainlinkRelayer = IChainlinkRelayer(_relayer);
+  }
+
+  function setCamelotRelayer(address _relayer) public {
+    camelotRelayer = ICamelotRelayer(_relayer);
+  }
+
+  function setDenominatedOracle(address _relayer) public {
+    denominatedOracle = IDenominatedOracle(_relayer);
   }
 }
