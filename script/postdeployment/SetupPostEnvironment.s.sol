@@ -8,7 +8,6 @@ import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
-import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
 // BROADCAST
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
