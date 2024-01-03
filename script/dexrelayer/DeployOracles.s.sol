@@ -11,10 +11,6 @@ import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 import {Data} from '@contracts/for-test/Data.sol';
 
-// TODO test denominated oracle after relayer works
-// import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
-// import {ChainlinkRelayerFactory, IChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
-
 // BROADCAST
 // source .env && forge script DeployOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
