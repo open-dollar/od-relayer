@@ -20,7 +20,7 @@ uint256 constant INIT_OD_AMOUNT = 2230 ether;
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
 // Data for dexrelayer script (for test) and Router for AlgebraPool
-address constant RELAYER_DATA = 0x91A35Ad2f71C25eB84A19eD27f12c362920b1DB2;
+address constant RELAYER_DATA = 0x07312FE65A7b6c07D33F8560EB49a1D2950885Ba;
 address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
 
 // Camelot Relayer
