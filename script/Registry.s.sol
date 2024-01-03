@@ -13,12 +13,15 @@ uint256 constant ORACLE_PERIOD = 1 seconds;
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant WAD = 1e18;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
+uint256 constant INIT_WETH_AMOUNT = 1 ether;
+uint256 constant INIT_OD_AMOUNT = 2230 ether;
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
-// Data for dexrelayer script (for test)
-address constant RELAYER_DATA = 0x98A724ECA2804DE70Cae1f28E070D3973CAdcf05;
+// Data for dexrelayer script (for test) and Router for AlgebraPool
+address constant RELAYER_DATA = 0x91A35Ad2f71C25eB84A19eD27f12c362920b1DB2;
+address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
 
 // Camelot Relayer
 address constant CAMELOT_RELAYER_FACTORY = 0x9a8E0E6611EC9ebd5A2c8168A2f808e0206d85E4; // from pre-deployment

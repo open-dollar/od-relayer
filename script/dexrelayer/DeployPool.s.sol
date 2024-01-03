@@ -3,10 +3,11 @@ pragma solidity 0.7.6;
 
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
+import {Sqrt} from '@algebra-core/libraries/Sqrt.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
-import {IRelayer} from '@interfaces/oracles/IRelayer.sol';
+import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
@@ -14,13 +15,13 @@ import {Router} from '@contracts/for-test/Router.sol';
 import {Data} from '@contracts/for-test/Data.sol';
 
 // BROADCAST
-// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+// source .env && forge script DeployPool --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
-// source .env && forge script DeployBase --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
+// source .env && forge script DeployPool --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract DeployBase is Script {
-  // Pool & Relayer Factories
+contract DeployPool is Script {
+  // Pool Factory
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
 
   // Router
@@ -68,22 +69,12 @@ contract DeployBase is Script {
   function deployPool() public {
     algebraFactory.createPool(data.tokenA(), data.tokenB());
     data.setPool(IAlgebraPool(algebraFactory.poolByPair(data.tokenA(), data.tokenB())));
-    data.pool().initialize(getSqrtPrice(1 ether, 1656.62 ether));
+    data.pool().initialize(getSqrtPrice(1 ether, 2355 ether));
   }
 
   function getSqrtPrice(uint256 _initWethAmount, uint256 _initODAmount) public pure returns (uint160) {
     uint256 price = (_initWethAmount * WAD) / _initODAmount;
-    uint256 sqrtPriceX96 = sqrt(price * WAD) * (2 ** 96);
+    uint256 sqrtPriceX96 = Sqrt.sqrtAbs(int256(price)) * (2 ** 96);
     return uint160(sqrtPriceX96);
-  }
-
-  // TODO test against isomate sqrt function
-  function sqrt(uint256 x) public pure returns (uint256 y) {
-    uint256 z = (x + 1) / 2;
-    y = x;
-    while (z < y) {
-      y = z;
-      z = (x / z + z) / 2;
-    }
   }
 }
