@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
+pragma abicoder v2;
 
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
+import {Test} from 'forge-std/Test.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
 import {Data} from '@contracts/for-test/Data.sol';
@@ -13,7 +15,7 @@ import {Data} from '@contracts/for-test/Data.sol';
 // SIMULATE
 // source .env && forge script CallResult --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract CallResult is Script {
+contract CallResult is Script, Test {
   Data public data = Data(RELAYER_DATA);
 
   ICamelotRelayer public relayer = data.camelotRelayer();
@@ -29,6 +31,14 @@ contract CallResult is Script {
       uint8 communityFee,
       bool unlocked
     ) = getGlobalState(IAlgebraPool(relayer.algebraPool()));
+
+    emit log_named_uint('Price       :', price);
+    emit log_named_uint('Fee         :', fee);
+    emit log_named_uint('TimePntIndex:', timepointIndex);
+    emit log_named_uint('CommunityFee:', communityFee);
+    emit log_named_int('Tick        :', tick);
+    emit log_named_int('PrevInitTick:', prevInitializedTick);
+    assertTrue(unlocked);
 
     relayer.getResultWithValidity();
     vm.stopBroadcast();
