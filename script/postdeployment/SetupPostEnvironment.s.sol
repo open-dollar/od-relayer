@@ -65,7 +65,7 @@ contract MockSetupPostEnvironment is Common {
     address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
 
     uint160 _sqrtPriceX96 = initialPrice(INIT_OD_AMOUNT, INIT_WETH_AMOUNT, _pool);
-    IAlgebraPool(_pool).initialize(uint160(_sqrtPriceX96));
+    IAlgebraPool(_pool).initialize(_sqrtPriceX96);
 
     IBaseOracle _odWethOracle = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, address(mockWeth), uint32(ORACLE_INTERVAL_TEST)

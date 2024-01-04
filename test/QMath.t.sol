@@ -20,10 +20,6 @@ import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 contract QMath is Test {
   using SafeMath for uint256;
 
-  // -- Constants --
-  uint256 constant INIT_WETH = 1 ether;
-  uint256 constant INIT_OD = 2221.3997 ether;
-
   // -- Factories --
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
   CamelotRelayerFactory public camelotRelayerFactory;
@@ -63,7 +59,7 @@ contract QMath is Test {
     require(keccak256(abi.encodePacked('WETH')) == keccak256(abi.encodePacked(token0.symbol())), '!WETH');
     require(keccak256(abi.encodePacked('OD')) == keccak256(abi.encodePacked(token1.symbol())), '!OD');
 
-    initPrice = ((INIT_WETH * WAD) / INIT_OD);
+    initPrice = ((INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
 
     uint256 _sqrtPriceX96 = Sqrt.sqrtAbs(int256(initPrice)) * (2 ** 96);
 
@@ -91,14 +87,14 @@ contract QMath is Test {
 
     // 1 / 2221.3997 = 0.000450166605436900 price of OD in terms of WETH
     emit log_named_uint('Price from LPool', _price);
-    emit log_named_uint('Price Calculated', (INIT_WETH * WAD) / INIT_OD);
+    emit log_named_uint('Price Calculated', (INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
   }
 
   function testChainlinkRelayerPrice() public {
     uint256 _result = chainlinkEthUSDPriceFeed.read();
     emit log_named_uint('Chainlink ETH/USD', _result); // 2347556500000000000000 / 1e18 = 2347.556500000000000000
 
-    assertApproxEqAbs(INIT_OD / 1e18, _result / 1e18, 500); // $500 flux
+    assertApproxEqAbs(INIT_OD_AMOUNT / 1e18, _result / 1e18, 500); // $500 flux
   }
 
   // needs to be predeployed
