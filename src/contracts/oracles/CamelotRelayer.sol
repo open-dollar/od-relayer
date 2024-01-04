@@ -72,13 +72,15 @@ contract CamelotRelayer {
   }
 
   function _parseResult(uint256 _quoteResult) internal view returns (uint256 _result) {
+    // reduce from 36 to 18 format
+    uint256 _quoteResultFormat = _quoteResult / 1e18;
     if (multiplier > 0) {
-      return _quoteResult * (10 ** uint256(multiplier));
+      return _quoteResultFormat * (10 ** uint256(multiplier));
+    } else if (multiplier < 0) {
+      return _quoteResultFormat / (10 ** abs(multiplier));
+    } else {
+      return _quoteResultFormat;
     }
-    else if (multiplier < 0) {
-      return _quoteResult / (10 ** abs(multiplier));
-    }
-    else return _quoteResult;
   }
 
   // @notice Return the absolute value of a signed integer as an unsigned integer

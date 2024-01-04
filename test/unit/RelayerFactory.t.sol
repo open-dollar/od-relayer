@@ -8,7 +8,6 @@ import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
-import {IRelayerFactory} from '@interfaces/factories/IRelayerFactory.sol';
 import {CamelotRelayerChild} from '@contracts/factories/CamelotRelayerChild.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 
@@ -23,8 +22,9 @@ abstract contract Base is DSTestPlus {
   IERC20Metadata mockQuoteToken = IERC20Metadata(mockContract('QuoteToken'));
 
   CamelotRelayerFactory relayerFactory;
-  CamelotRelayerChild relayerChild =
-    CamelotRelayerChild(label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild'));
+  CamelotRelayerChild relayerChild = CamelotRelayerChild(
+    label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild')
+  );
 
   function setUp() public virtual {
     vm.startPrank(deployer);
@@ -106,7 +106,9 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   function test_Revert_Unauthorized(uint32 _quotePeriod) public {
     vm.expectRevert('Unauthorized');
 
-    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
   }
 
   function test_Deploy_RelayerChild(
@@ -114,7 +116,9 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
 
     // assertEq(address(relayerChild).code, type(CamelotRelayerChild).runtimeCode);
 
@@ -129,7 +133,9 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
 
     assertEq(relayerFactory.relayerById(1), address(relayerChild));
   }
@@ -142,7 +148,9 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     vm.expectEmit();
     emit NewAlgebraRelayer(address(relayerChild), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
-    relayerFactory.deployAlgebraRelayer(SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    relayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
   }
 
   function test_Return_Relayer(

@@ -3,6 +3,9 @@ pragma solidity 0.7.6;
 
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import {IChainlinkRelayerFactory} from '@interfaces/factories/IChainlinkRelayerFactory.sol';
+import {ICamelotRelayerFactory} from '@interfaces/factories/ICamelotRelayerFactory.sol';
+import {IDenominatedOracleFactory} from '@interfaces/factories/IDenominatedOracleFactory.sol';
 import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
 import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
 import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
@@ -14,6 +17,11 @@ contract Data {
 
   // Pool
   IAlgebraPool public pool;
+
+  // Factories
+  IChainlinkRelayerFactory public chainlinkRelayerFactory;
+  ICamelotRelayerFactory public camelotRelayerFactory;
+  IDenominatedOracleFactory public denominatedOracleFactory;
 
   // Relayers
   IChainlinkRelayer public chainlinkRelayer;
@@ -46,15 +54,17 @@ contract Data {
     pool = _pool;
   }
 
-  function setChainlinkRelayer(address _relayer) public {
-    chainlinkRelayer = IChainlinkRelayer(_relayer);
+  function modifyFactory(bytes32 _param, address _factory) public {
+    if (_param == 'chainlinkRelayerFactory') chainlinkRelayerFactory = IChainlinkRelayerFactory(_factory);
+    else if (_param == 'camelotRelayerFactory') camelotRelayerFactory = ICamelotRelayerFactory(_factory);
+    else if (_param == 'denominatedOracleFactory') denominatedOracleFactory = IDenominatedOracleFactory(_factory);
+    else revert('Factory not set');
   }
 
-  function setCamelotRelayer(address _relayer) public {
-    camelotRelayer = ICamelotRelayer(_relayer);
-  }
-
-  function setDenominatedOracle(address _relayer) public {
-    denominatedOracle = IDenominatedOracle(_relayer);
+  function modifyOracle(bytes32 _param, address _oracle) public {
+    if (_param == 'chainlinkRelayer') chainlinkRelayer = IChainlinkRelayer(_oracle);
+    else if (_param == 'camelotRelayer') camelotRelayer = ICamelotRelayer(_oracle);
+    else if (_param == 'denominatedOracle') denominatedOracle = IDenominatedOracle(_oracle);
+    else revert('Oracle not set');
   }
 }

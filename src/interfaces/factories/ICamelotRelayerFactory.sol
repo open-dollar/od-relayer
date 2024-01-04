@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
-interface IRelayerFactory {
+interface ICamelotRelayerFactory {
   // --- Events ---
   event NewAlgebraRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
 

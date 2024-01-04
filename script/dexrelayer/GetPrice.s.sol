@@ -12,6 +12,7 @@ import {ICamelotRelayer} from '@interfaces/oracles/ICamelotRelayer.sol';
 import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {Data} from '@contracts/for-test/Data.sol';
+import {DataStorageLibrary} from '@algebra-periphery/libraries/DataStorageLibrary.sol';
 
 // BROADCAST
 // source .env && forge script GetPrice --skip-simulation --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
@@ -22,17 +23,13 @@ import {Data} from '@contracts/for-test/Data.sol';
 contract GetPrice is Script, Test {
   Data public data = Data(RELAYER_DATA);
 
-  // -- Constants --
-  uint256 constant INIT_WETH = 1 ether;
-  uint256 constant INIT_OD = 2355 ether;
-
   // Tokens
   address public tokenA = data.tokenA();
   address public tokenB = data.tokenB();
 
   // Pool
   IAlgebraPool public pool = data.pool();
-  uint256 public initPrice = ((INIT_WETH * WAD) / INIT_OD);
+  uint256 public initPrice = ((INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
 
   // Relayers
   IBaseOracle public chainlinkRelayer = IBaseOracle(address(data.chainlinkRelayer()));
@@ -43,8 +40,8 @@ contract GetPrice is Script, Test {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_PK'));
 
     poolPrice();
-    chainlinkRelayerPrice();
     camelotRelayerPrice();
+    chainlinkRelayerPrice();
     denominatedOraclePrice();
   }
 
@@ -52,31 +49,36 @@ contract GetPrice is Script, Test {
     IAlgebraPool _pool = IAlgebraPool(pool);
     (uint160 _sqrtPriceX96,,,,,,) = _pool.globalState();
 
-    emit log_named_uint('sqrtPriceX96', _sqrtPriceX96);
+    emit log_named_uint('Sq Root Price X96', _sqrtPriceX96);
 
     uint256 _price = (SafeMath.div(uint256(_sqrtPriceX96), (2 ** 96))) ** 2;
-    assertApproxEqAbs(initPrice, _price, 100_000_000); // 0.000000000100000000 variability
 
-    emit log_named_uint('Price from LPool', _price); // 0.000424628419232196 ether
-    emit log_named_uint('Price Calculated', (INIT_WETH * WAD) / INIT_OD); // 0.000424628450106157 ether
-  }
-
-  function chainlinkRelayerPrice() public {
-    uint256 _result = chainlinkRelayer.read();
-    emit log_named_uint('Chainlink ETH/USD', _result); // 2382270000000000000000 (w/ 18 decimal = 2382.270...)
-
-    assertApproxEqAbs(INIT_OD / 1e18, _result / 1e18, 500); // $500 flex for
+    emit log_named_uint('Price from L-Pool', _price);
+    emit log_named_uint('Price  Calculated', (INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
   }
 
   function camelotRelayerPrice() public {
     uint256 _result = camelotRelayer.read();
-    emit log_named_uint('Camelot OD/WETH', _result); // 424620063704448204165193502948931 (w/ 36 decimal = 0.000424...)
+    emit log_named_uint('Camelot   OD/WETH', _result);
+  }
 
-    assertApproxEqAbs(initPrice, _result / 1e18, 10_000_000_000); // 0.000000001000000000 variability
+  function chainlinkRelayerPrice() public {
+    uint256 _result = chainlinkRelayer.read();
+    emit log_named_uint('Chainlink ETH/USD', _result);
   }
 
   function denominatedOraclePrice() public {
-    uint256 _result = denominatedOracle.read(); // 1008432145061984058301035060743127269 (w/ 36 decimal = 1.008...)
-    emit log_named_uint('SystemOracle OD/USD', _result);
+    uint256 _result = denominatedOracle.read();
+    emit log_named_uint('SystOracle OD/USD', _result);
   }
 }
+
+/**
+ * == Logs ==
+ *   Sq Root Price X96: 1677749592786826637668640749594345472
+ *   Price from L-Pool: 448430472335329
+ *   Price  Calculated: 448430493273542
+ *   Camelot   OD/WETH: 448402863189474        ($0.0004484)
+ *   Chainlink ETH/USD: 2217140000000000000000 ($2217.1400000)
+ *   SystOracle OD/USD: 994171924091910384     ($0.9941719)
+ */
