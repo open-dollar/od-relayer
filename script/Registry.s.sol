@@ -5,7 +5,7 @@ pragma solidity 0.7.6;
 address constant TEST_GOVERNOR = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
 // Registry of protocol deployment
-address constant SEPOLIA_SYSTEM_COIN = 0x94beB5fC16824338Eaa538c3c857D7f7fFf4B2Ce;
+address constant SEPOLIA_SYSTEM_COIN = 0xFEE6D2833274CDDFfDb641DCa990733c6917598B;
 address constant SEPOLIA_WETH = 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73;
 
 // Testnet Params
@@ -23,14 +23,17 @@ address constant RELAYER_DATA = 0x1F17CB9B80192E5C6E9BbEdAcc5F722a4e93f16e;
 address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
 
 // Camelot Relayer
-address constant CAMELOT_RELAYER_FACTORY = 0x6C87b6e2E651cc4ebcE3Ba782037898dDDB445bF; // from pre-deployment
-address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0;
+address constant CAMELOT_RELAYER_FACTORY = 0x92Bfb4D96f0b8dcA8F6e5E0fc4713DEa8243d9D6; // from pre-deployment
+address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0; // DEX pool relayer
+address constant CAMELOT_RELAYER = address(0); // post setup
 
 // Chainlink Relayer
-address constant CHAINLINK_RELAYER_FACTORY = 0x253c08EeB065F8940A8277901c91Ab4931d19044; // from pre-deployment
+address constant CHAINLINK_RELAYER_FACTORY = 0x321D55f347095cdA4Ec8d10B63cD099396D1eb29; // from pre-deployment
+address constant CHAINLINK_RELAYER = address(0); // post setup
 
 // Denominated Oracle
-address constant DENOMINATED_ORACLE_FACTORY = 0xD2823Cf1F062b2E92Fc33cd733a359fEFBA607dC; // from pre-deployment
+address constant DENOMINATED_ORACLE_FACTORY = 0xaF3A59b1794d0E51197CED02AEb87E14DEf07aCf; // from pre-deployment
+address constant SYSTEM_ORACLE = address(0); // post setup
 
 // Chainlink feeds
 address constant SEPOLIA_CHAINLINK_ETH_USD_FEED = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;

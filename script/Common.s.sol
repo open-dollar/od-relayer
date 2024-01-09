@@ -39,7 +39,7 @@ abstract contract Common is Script {
     uint256 _basePrice,
     uint256 _quotePrice,
     address _pool
-  ) internal returns (uint160 _sqrtPriceX96) {
+  ) internal view returns (uint160 _sqrtPriceX96) {
     address _token0 = IAlgebraPool(_pool).token0();
     bytes32 _symbol = keccak256(abi.encodePacked(IERC20Metadata(_token0).symbol()));
     uint256 _price;
