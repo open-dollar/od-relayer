@@ -54,6 +54,8 @@ contract SetupPostEnvironment is Common {
 // SIMULATE
 // source .env && forge script MockSetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
+// ToDo: add liquidity
+
 contract MockSetupPostEnvironment is Common {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
 
