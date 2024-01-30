@@ -1,5 +1,5 @@
 <p align="center">
-<img width="60" height="60"  src="https://raw.githubusercontent.com/open-dollar/od-app/dev/public/od-logo.svg">
+<img width="60" height="60"  src="https://raw.githubusercontent.com/open-dollar/.github/main/od-logo.svg">
 </p>
 <h1 align="center">
   Open Dollar Relayer
