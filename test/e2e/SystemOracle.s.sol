@@ -16,6 +16,7 @@ import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {ChainlinkRelayer} from '@contracts/oracles/ChainlinkRelayer.sol';
 import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
+import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 import {DenominatedOracle} from '@contracts/oracles/DenominatedOracle.sol';
 import {IDenominatedOracle} from '@interfaces/oracles/IDenominatedOracle.sol';
 
@@ -89,7 +90,7 @@ contract OracleSetup is DSTestPlus {
   // --- Chainlink ---
 
   function test_ChainlinkOracle() public {
-    int256 price = IChainlinkRelayer(CHAINLINK_ETH_USD_FEED).latestAnswer();
+    int256 price = IChainlinkOracle(CHAINLINK_ETH_USD_FEED).latestAnswer();
     assertTrue(price >= ETH_USD_PRICE_L && price <= ETH_USD_PRICE_H);
   }
 
