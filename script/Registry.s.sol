@@ -21,18 +21,18 @@ address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 // Data for dexrelayer script (for test) and Router for AlgebraPool
 address constant RELAYER_DATA = 0x1F17CB9B80192E5C6E9BbEdAcc5F722a4e93f16e;
 address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
+address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0; // DEX pool relayer for `dexrelayer` scripts
 
 // Camelot Relayer
-address constant CAMELOT_RELAYER_FACTORY = 0x92Bfb4D96f0b8dcA8F6e5E0fc4713DEa8243d9D6; // from pre-deployment
-address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0; // DEX pool relayer
+address constant CAMELOT_RELAYER_FACTORY = 0x7C85Bceb6DE55f317fe846a2e02100Ac84e94167; // from pre-deployment
 address constant CAMELOT_RELAYER = address(0); // post setup
 
 // Chainlink Relayer
-address constant CHAINLINK_RELAYER_FACTORY = 0x321D55f347095cdA4Ec8d10B63cD099396D1eb29; // from pre-deployment
+address constant CHAINLINK_RELAYER_FACTORY = 0x67760796Ae4beD0b317ECcd4e482EFca46F10D68; // from pre-deployment
 address constant CHAINLINK_RELAYER = address(0); // post setup
 
 // Denominated Oracle
-address constant DENOMINATED_ORACLE_FACTORY = 0xaF3A59b1794d0E51197CED02AEb87E14DEf07aCf; // from pre-deployment
+address constant DENOMINATED_ORACLE_FACTORY = 0x07ACBf81a156EAe49Eaa0eF80bBAe4E050f6278e; // from pre-deployment
 address constant SYSTEM_ORACLE = address(0); // post setup
 
 // Chainlink feeds
