@@ -1,20 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
-interface IChainlinkRelayer {
-  function decimals() external view returns (uint8 _decimals);
-  function description() external view returns (string memory _description);
-  function getAnswer(uint256 _roundId) external view returns (int256 _answer);
-  function getRoundData(uint256 __roundId)
-    external
-    view
-    returns (uint256 _roundId, int256 _answer, uint256 _startedAt, uint256 _updatedAt, uint256 _answeredInRound);
-  function getTimestamp(uint256 _roundId) external view returns (uint256 _timestamp);
-  function latestAnswer() external view returns (int256 _latestAnswer);
-  function latestRound() external view returns (uint256 _latestRound);
-  function latestRoundData()
-    external
-    view
-    returns (uint256 _roundId, int256 _answer, uint256 _startedAt, uint256 _updatedAt, uint256 _answeredInRound);
-  function latestTimestamp() external view returns (uint256 _latestTimestamp);
+import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
+import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
+
+interface IChainlinkRelayer is IBaseOracle {
+  function chainlinkFeed() external view returns (IChainlinkOracle _priceFeed);
+
+  /// @notice The multiplier used to convert the quote into an 18 decimals format
+  function multiplier() external view returns (uint256 _multiplier);
+
+  /// @notice The time threshold after which a Chainlink response is considered stale
+  function staleThreshold() external view returns (uint256 _staleThreshold);
 }

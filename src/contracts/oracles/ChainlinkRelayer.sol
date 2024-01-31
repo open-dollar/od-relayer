@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
-import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
+import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 
 /**
  * @title  ChainlinkRelayer
@@ -11,12 +11,12 @@ import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
 contract ChainlinkRelayer {
   // --- Registry ---
 
-  IChainlinkRelayer public chainlinkFeed;
+  IChainlinkOracle public chainlinkFeed;
 
   // --- Data ---
 
   string public symbol;
-  uint256 public multiplier;
+  int256 public multiplier;
   uint256 public staleThreshold;
 
   // --- Init ---
@@ -30,9 +30,9 @@ contract ChainlinkRelayer {
     require(_staleThreshold != 0, 'NullStaleThreshold');
 
     staleThreshold = _staleThreshold;
-    chainlinkFeed = IChainlinkRelayer(_aggregator);
+    chainlinkFeed = IChainlinkOracle(_aggregator);
 
-    multiplier = 18 - chainlinkFeed.decimals();
+    multiplier = int256(18) - int256(uint256(chainlinkFeed.decimals()));
     symbol = chainlinkFeed.description();
   }
 
@@ -60,7 +60,13 @@ contract ChainlinkRelayer {
 
   /// @notice Parses the result from the aggregator into 18 decimals format
   function _parseResult(int256 _chainlinkResult) internal view returns (uint256 _result) {
-    return uint256(_chainlinkResult) * 10 ** multiplier;
+    if (multiplier > 0) {
+      return uint256(_chainlinkResult) * (10 ** uint256(multiplier));
+    } else if (multiplier < 0) {
+      return uint256(_chainlinkResult) / (10 ** abs(multiplier));
+    } else {
+      return uint256(_chainlinkResult);
+    }
   }
 
   /// @notice Checks if the feed is valid, considering the staleThreshold and the feed timestamp
@@ -68,5 +74,11 @@ contract ChainlinkRelayer {
     uint256 _now = block.timestamp;
     if (_feedTimestamp > _now) return false;
     return _now - _feedTimestamp <= staleThreshold;
+  }
+
+  // @notice Return the absolute value of a signed integer as an unsigned integer
+  function abs(int256 x) internal pure returns (uint256) {
+    x >= 0 ? x : -x;
+    return uint256(x);
   }
 }
