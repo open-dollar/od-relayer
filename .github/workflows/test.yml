@@ -2,18 +2,13 @@ name: test
 
 on: [push, workflow_dispatch]
 
-
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
   cancel-in-progress: true
 
 env:
   FOUNDRY_PROFILE: ci
-  OP_MAINNET_RPC: ${{ secrets.OP_MAINNET_RPC }}
-  OP_GOERLI_RPC: ${{ secrets.OP_GOERLI_RPC }}
-  OP_MAINNET_DEPLOYER_PK: ${{ secrets.TEST_DEPLOYER_PK }}
-  OP_GOERLI_DEPLOYER_PK: ${{ secrets.TEST_DEPLOYER_PK }}
-  ARB_GOERLI_RPC: ${{ secrets.ARB_GOERLI_RPC }}
+  ARB_SEPOLIA_RPC: ${{ secrets.ARB_SEPOLIA_RPC }}
   ARB_MAINNET_RPC: ${{ secrets.ARB_MAINNET_RPC }}
 
 jobs:
