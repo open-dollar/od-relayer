@@ -11,6 +11,13 @@ import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
+abstract contract CommonMainnet is Script {
+  ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
+  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_RELAYER_FACTORY);
+  DenominatedOracleFactory public denominatedOracleFactory =
+    DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
+}
+
 abstract contract CommonSepolia is Script {
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(SEPOLIA_CHAINLINK_RELAYER_FACTORY);
   CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(SEPOLIA_CAMELOT_RELAYER_FACTORY);
