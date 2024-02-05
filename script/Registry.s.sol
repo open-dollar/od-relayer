@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.7.6;
 
+uint256 constant WAD = 1e18;
+
+// -- Sepolia --
+
 // DAO
 address constant TEST_GOVERNOR = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 
@@ -10,7 +14,6 @@ address constant SEPOLIA_WETH = 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73;
 
 // Testnet Params
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
-uint256 constant WAD = 1e18;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
 uint256 constant INIT_WETH_AMOUNT = 1 ether;
 uint256 constant INIT_OD_AMOUNT = 2230 ether;
@@ -24,16 +27,16 @@ address constant ROUTER = 0x2a004eA6266eA1A340D1a7D78F1e0F4e9Ae2e685;
 address constant RELAYER_ONE = 0xa430DD704aC39756fbA7C26FEAF9A220741c05b0; // DEX pool relayer for `dexrelayer` scripts
 
 // Camelot Relayer
-address constant CAMELOT_RELAYER_FACTORY = 0x7C85Bceb6DE55f317fe846a2e02100Ac84e94167; // from pre-deployment
-address constant CAMELOT_RELAYER = address(0); // post setup
+address constant SEPOLIA_CAMELOT_RELAYER_FACTORY = 0x7C85Bceb6DE55f317fe846a2e02100Ac84e94167; // from pre-deployment
+address constant SEPOLIA_CAMELOT_RELAYER = address(0); // post setup
 
 // Chainlink Relayer
-address constant CHAINLINK_RELAYER_FACTORY = 0x67760796Ae4beD0b317ECcd4e482EFca46F10D68; // from pre-deployment
-address constant CHAINLINK_RELAYER = address(0); // post setup
+address constant SEPOLIA_CHAINLINK_RELAYER_FACTORY = 0x67760796Ae4beD0b317ECcd4e482EFca46F10D68; // from pre-deployment
+address constant SEPOLIA_CHAINLINK_RELAYER = address(0); // post setup
 
 // Denominated Oracle
-address constant DENOMINATED_ORACLE_FACTORY = 0x07ACBf81a156EAe49Eaa0eF80bBAe4E050f6278e; // from pre-deployment
-address constant SYSTEM_ORACLE = address(0); // post setup
+address constant SEPOLIA_DENOMINATED_ORACLE_FACTORY = 0x07ACBf81a156EAe49Eaa0eF80bBAe4E050f6278e; // from pre-deployment
+address constant SEPOLIA_SYSTEM_ORACLE = address(0); // post setup
 
 // Chainlink feeds
 address constant SEPOLIA_CHAINLINK_ETH_USD_FEED = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
@@ -57,6 +60,11 @@ address constant SEPOLIA_ALGEBRA_FARM_CENTER = 0x04e4A5A4E4D2A5a0fb48ECde0bbD555
 
 address constant MAINNET_ALGEBRA_FACTORY = 0x1a3c9B1d2F0529D97f2afC5136Cc23e58f1FD35B;
 
+// Pre-deployment relayer factories
+address constant MAINNET_CAMELOT_RELAYER_FACTORY = 0xC235041D2ea652261f816e4e8F56bD02AD623E11;
+address constant MAINNET_CHAINLINK_RELAYER_FACTORY = 0x62f4A8565BDca2bB2b7975D4d5B48F61DA8846f5;
+address constant MAINNET_DENOMINATED_ORACLE_FACTORY = 0xb6010972669953F6212B4AD969753c6e22ed5131;
+
 // Chainlink feeds to USD
 address constant CHAINLINK_ARB_USD_FEED = 0xb2A824043730FE05F3DA2efaFa1CBbe83fa548D6;
 address constant CHAINLINK_ETH_USD_FEED = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
@@ -69,3 +77,5 @@ address constant CHAINLINK_RETH_ETH_FEED = 0xF3272CAfe65b190e76caAF483db13424a3e
 address constant ETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
 address constant ARB = 0x912CE59144191C1204E64559FE8253a0e49E6548;
 address constant ETH_ARB_POOL = 0xe51635ae8136aBAc44906A8f230C2D235E9c195F;
+
+address constant MAINNET_DEPLOYER = 0xF78dA2A37049627636546E0cFAaB2aD664950917;
