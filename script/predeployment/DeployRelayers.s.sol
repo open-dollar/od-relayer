@@ -26,6 +26,26 @@ contract DeployODGCamelotRelayerMainnet is CommonMainnet {
 }
 
 // BROADCAST
+// source .env && forge script DeployOdgUsdRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployOdgUsdRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployOdgUsdRelayerMainnet is CommonMainnet {
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    IBaseOracle _odgUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      IBaseOracle(MAINNET_CAMELOT_ODG_WETH_RELAYER), IBaseOracle(MAINNET_CHAINLINK_ETH_USD_RELAYER), false
+    );
+
+    _odgUsdOracle.symbol(); // "(ODG / WETH) * (ETH / USD)"
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
 // source .env && forge script DeployEthUsdChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
