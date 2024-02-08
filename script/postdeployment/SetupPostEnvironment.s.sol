@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 
 import 'forge-std/console2.sol';
 import '@script/Registry.s.sol';
-import {Common} from '@script/Common.s.sol';
+import {CommonSepolia} from '@script/Common.s.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
@@ -15,7 +15,7 @@ import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 // SIMULATE
 // source .env && forge script SetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract SetupPostEnvironment is Common {
+contract SetupPostEnvironment is CommonSepolia {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
 
   function run() public {
@@ -54,7 +54,9 @@ contract SetupPostEnvironment is Common {
 // SIMULATE
 // source .env && forge script MockSetupPostEnvironment --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_SEPOLIA_RPC
 
-contract MockSetupPostEnvironment is Common {
+// ToDo: add liquidity
+
+contract MockSetupPostEnvironment is CommonSepolia {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
 
   function run() public {

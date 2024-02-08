@@ -11,14 +11,22 @@ import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
-abstract contract Common is Script {
-  ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(CHAINLINK_RELAYER_FACTORY);
-  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(CAMELOT_RELAYER_FACTORY);
-  DenominatedOracleFactory public denominatedOracleFactory = DenominatedOracleFactory(DENOMINATED_ORACLE_FACTORY);
+abstract contract CommonMainnet is Script {
+  ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
+  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_RELAYER_FACTORY);
+  DenominatedOracleFactory public denominatedOracleFactory =
+    DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
+}
 
-  IAuthorizable public chainlinkRelayerFactoryAuth = IAuthorizable(CHAINLINK_RELAYER_FACTORY);
-  IAuthorizable public camelotRelayerFactoryAuth = IAuthorizable(CAMELOT_RELAYER_FACTORY);
-  IAuthorizable public denominatedOracleFactoryAuth = IAuthorizable(DENOMINATED_ORACLE_FACTORY);
+abstract contract CommonSepolia is Script {
+  ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(SEPOLIA_CHAINLINK_RELAYER_FACTORY);
+  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(SEPOLIA_CAMELOT_RELAYER_FACTORY);
+  DenominatedOracleFactory public denominatedOracleFactory =
+    DenominatedOracleFactory(SEPOLIA_DENOMINATED_ORACLE_FACTORY);
+
+  IAuthorizable public chainlinkRelayerFactoryAuth = IAuthorizable(SEPOLIA_CHAINLINK_RELAYER_FACTORY);
+  IAuthorizable public camelotRelayerFactoryAuth = IAuthorizable(SEPOLIA_CAMELOT_RELAYER_FACTORY);
+  IAuthorizable public denominatedOracleFactoryAuth = IAuthorizable(SEPOLIA_DENOMINATED_ORACLE_FACTORY);
 
   address public deployer = vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC');
   address public admin = vm.envAddress('ARB_SEPOLIA_PC');

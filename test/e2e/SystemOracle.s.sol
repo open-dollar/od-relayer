@@ -4,8 +4,8 @@ pragma abicoder v2;
 
 import {
   MAINNET_ALGEBRA_FACTORY,
-  CHAINLINK_ETH_USD_FEED,
-  CHAINLINK_ARB_USD_FEED,
+  MAINNET_CHAINLINK_ETH_USD_FEED,
+  MAINNET_CHAINLINK_ARB_USD_FEED,
   ETH,
   ARB,
   ETH_ARB_POOL
@@ -70,7 +70,7 @@ contract OracleSetup is DSTestPlus {
     vm.rollFork(ARBTIRUM_BLOCK);
 
     // --- Chainlink ---
-    ethUsdPriceSource = IBaseOracle(address(new ChainlinkRelayer(CHAINLINK_ETH_USD_FEED, 1 days)));
+    ethUsdPriceSource = IBaseOracle(address(new ChainlinkRelayer(MAINNET_CHAINLINK_ETH_USD_FEED, 1 days)));
 
     // --- Camelot ---
     arbEthPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, 1 days))); // correct
@@ -90,7 +90,7 @@ contract OracleSetup is DSTestPlus {
   // --- Chainlink ---
 
   function test_ChainlinkOracle() public {
-    int256 price = IChainlinkOracle(CHAINLINK_ETH_USD_FEED).latestAnswer();
+    int256 price = IChainlinkOracle(MAINNET_CHAINLINK_ETH_USD_FEED).latestAnswer();
     assertTrue(price >= ETH_USD_PRICE_L && price <= ETH_USD_PRICE_H);
   }
 
