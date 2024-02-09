@@ -31,9 +31,9 @@ contract MockDeployFactories is Script {
     camelotRelayerFactory = new CamelotRelayerFactory();
     denominatedOracleFactory = new DenominatedOracleFactory();
 
-    IAuthorizable(address(chainlinkRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
-    IAuthorizable(address(camelotRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
-    IAuthorizable(address(denominatedOracleFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_PC'));
+    IAuthorizable(address(chainlinkRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_ADDR'));
+    IAuthorizable(address(camelotRelayerFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_ADDR'));
+    IAuthorizable(address(denominatedOracleFactory)).addAuthorization(vm.envAddress('ARB_SEPOLIA_ADDR'));
 
     data.modifyFactory(bytes32('chainlinkRelayerFactory'), address(chainlinkRelayerFactory));
     data.modifyFactory(bytes32('camelotRelayerFactory'), address(camelotRelayerFactory));

@@ -97,13 +97,16 @@ contract QMath is Test {
     assertApproxEqAbs(INIT_OD_AMOUNT / 1e18, _result / 1e18, 500); // $500 flux
   }
 
-  // needs to be predeployed
   function testCamelotRelayerPrice() public {
+    vm.warp(block.timestamp + 1 minutes + 1 seconds);
     uint256 _result = camelotOdWethOracle.read();
-    emit log_named_uint('Camelot OD/WETH', _result); //  / 1e18 =
+    emit log_named_uint('Camelot OD/WETH', _result);
 
-    assertApproxEqAbs(initPrice, _result, 100_000_000); // 0.000000000100000000 variability
+    assertEq(INIT_OD_AMOUNT / 1e18, _result);
   }
 
-  // function testDenominatedOraclePrice() public {}
+  function testOldCamelotRelayerPrice() public {
+    vm.expectRevert(bytes('OLD'));
+    camelotOdWethOracle.read();
+  }
 }

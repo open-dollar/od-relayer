@@ -28,8 +28,8 @@ abstract contract CommonSepolia is Script {
   IAuthorizable public camelotRelayerFactoryAuth = IAuthorizable(SEPOLIA_CAMELOT_RELAYER_FACTORY);
   IAuthorizable public denominatedOracleFactoryAuth = IAuthorizable(SEPOLIA_DENOMINATED_ORACLE_FACTORY);
 
-  address public deployer = vm.envAddress('ARB_SEPOLIA_DEPLOYER_PC');
-  address public admin = vm.envAddress('ARB_SEPOLIA_PC');
+  address public deployer = vm.envAddress('ARB_SEPOLIA_DEPLOYER_ADDR');
+  address public admin = vm.envAddress('ARB_SEPOLIA_ADDR');
 
   function _revoke(IAuthorizable _contract, address _authorize, address _deauthorize) internal {
     _contract.addAuthorization(_authorize);
