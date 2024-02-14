@@ -16,7 +16,7 @@ address constant SEPOLIA_WETH = 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73;
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
 uint256 constant INIT_WETH_AMOUNT = 1 ether;
-uint256 constant INIT_OD_AMOUNT = 2230 ether;
+uint256 constant INIT_OD_AMOUNT = 2500 ether;
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
