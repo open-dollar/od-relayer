@@ -17,6 +17,10 @@ import {MintableERC20} from '@contracts/for-test/MintableERC20.sol';
 
 // forge test --match-contract QMath -vvvvv
 
+/**
+ * @dev large price fluctuations in the price of ETH may break these tests
+ * in the case of large price fluctuation, adjust INIT_OD_AMOUNT in the Registry to set OD / ETH price
+ */
 contract QMath is Test {
   using SafeMath for uint256;
 
