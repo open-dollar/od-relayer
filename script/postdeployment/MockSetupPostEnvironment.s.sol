@@ -30,6 +30,7 @@ contract MockSetupPostEnvironment is CommonSepolia {
   IAlgebraFactory public algebraFactory = IAlgebraFactory(SEPOLIA_ALGEBRA_FACTORY);
   MintableERC20 public mockWeth;
   MintableERC20 public mockWsteth = MintableERC20(0x5Ae92E2cBce39b74f149B7dA16d863382397d4a7);
+  address public systemCoinOracle;
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
@@ -49,7 +50,8 @@ contract MockSetupPostEnvironment is CommonSepolia {
       chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, ORACLE_INTERVAL_TEST);
 
     // deploy systemOracle
-    denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false);
+    systemCoinOracle =
+      address(denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false));
 
     authOnlyFactories();
 
@@ -75,6 +77,8 @@ contract MockSetupPostEnvironment is CommonSepolia {
     // check pool balance after
     IERC20(SEPOLIA_SYSTEM_COIN).balanceOf(_pool);
     IERC20(mockWeth).balanceOf(_pool);
+
+    console2.logBytes20(bytes20(systemCoinOracle));
 
     vm.stopBroadcast();
   }
