@@ -72,8 +72,7 @@ contract MockSetupPostEnvironment is CommonSepolia {
 
     // add liquidity
     (int24 bottomTick, int24 topTick) = generateTickParams(IAlgebraPool(_pool));
-    // _router.addLiquidity(bottomTick, topTick, uint128(100_000_000_000_000));
-    _router.addLiquidity(bottomTick, topTick, uint128(1000 ether));
+    _router.addLiquidity(bottomTick, topTick, uint128(100_000));
 
     // check pool balance after
     IERC20(SEPOLIA_SYSTEM_COIN).balanceOf(_pool);
