@@ -72,7 +72,8 @@ contract MockSetupPostEnvironment is CommonSepolia {
 
     // add liquidity
     (int24 bottomTick, int24 topTick) = generateTickParams(IAlgebraPool(_pool));
-    _router.addLiquidity(bottomTick, topTick, uint128(100));
+    // _router.addLiquidity(bottomTick, topTick, uint128(100_000_000_000_000));
+    _router.addLiquidity(bottomTick, topTick, uint128(1000 ether));
 
     // check pool balance after
     IERC20(SEPOLIA_SYSTEM_COIN).balanceOf(_pool);
@@ -118,8 +119,8 @@ contract MockSetupPostEnvironment is CommonSepolia {
       _collateralJoin_wsteth,
       _coinJoin,
       _safeId,
-      850_000_000_000_000_000,
-      500_000_000_000_000_000_000
+      850 ether,
+      500_000 ether
     );
     ODProxy(_proxy).execute(_basicActions, payload);
   }
@@ -127,7 +128,7 @@ contract MockSetupPostEnvironment is CommonSepolia {
   function generateTickParams(IAlgebraPool pool) public view returns (int24 bottomTick, int24 topTick) {
     (, int24 tick,,,,,) = pool.globalState();
     int24 tickSpacing = pool.tickSpacing();
-    bottomTick = ((tick / tickSpacing) * tickSpacing) - 3 * tickSpacing;
-    topTick = ((tick / tickSpacing) * tickSpacing) + 3 * tickSpacing;
+    bottomTick = ((tick / tickSpacing) * tickSpacing) - 10 * tickSpacing;
+    topTick = ((tick / tickSpacing) * tickSpacing) + 10 * tickSpacing;
   }
 }
