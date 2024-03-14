@@ -52,7 +52,6 @@ contract QMath is Test {
     denominatedOracleFactory = new DenominatedOracleFactory();
 
     mockWeth = new MintableERC20('Wrapped ETH', 'WETH', 18);
-    // mockOd = new MintableERC20('Open Dollar', 'OD', 18);
 
     algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, address(mockWeth));
     pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
@@ -60,10 +59,19 @@ contract QMath is Test {
     token0 = IERC20Metadata(IAlgebraPool(pool).token0());
     token1 = IERC20Metadata(IAlgebraPool(pool).token1());
 
-    require(keccak256(abi.encodePacked('WETH')) == keccak256(abi.encodePacked(token0.symbol())), '!WETH');
-    require(keccak256(abi.encodePacked('OD')) == keccak256(abi.encodePacked(token1.symbol())), '!OD');
+    uint256 inverted;
 
-    initPrice = ((INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
+    // price = token1 / token0
+    if (address(token0) == SEPOLIA_SYSTEM_COIN) {
+      require(keccak256(abi.encodePacked('OD')) == keccak256(abi.encodePacked(token0.symbol())), '!OD');
+      initPrice = ((INIT_WETH_AMOUNT * WAD) / INIT_OD_AMOUNT);
+    } else {
+      require(keccak256(abi.encodePacked('WETH')) == keccak256(abi.encodePacked(token0.symbol())), '!WETH');
+      initPrice = ((INIT_OD_AMOUNT * WAD) / INIT_WETH_AMOUNT);
+      inverted = 1;
+    }
+
+    emit log_named_uint('Inverted', inverted);
 
     uint256 _sqrtPriceX96 = Sqrt.sqrtAbs(int256(initPrice)) * (2 ** 96);
 
@@ -106,7 +114,7 @@ contract QMath is Test {
     uint256 _result = camelotOdWethOracle.read();
     emit log_named_uint('Camelot OD/WETH', _result);
 
-    assertEq(INIT_OD_AMOUNT / 1e18, _result);
+    assertApproxEqAbs((INIT_OD_AMOUNT * _result) / 1e18, 1 ether, 0.1 ether); // 1 USD
   }
 
   function testOldCamelotRelayerPrice() public {
