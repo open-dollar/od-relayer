@@ -72,13 +72,12 @@ contract CamelotRelayer {
   }
 
   function _parseResult(uint256 _quoteResult) internal view returns (uint256 _result) {
-    uint256 _res = _quoteResult / 1e18;
-    if (multiplier > 0) {
-      return _res * (10 ** uint256(multiplier));
-    } else if (multiplier < 0) {
-      return _res / (10 ** abs(multiplier));
+    if (multiplier == 0) {
+      return _quoteResult;
+    } else if (multiplier > 0) {
+      return _quoteResult * (10 ** uint256(multiplier));
     } else {
-      return _res;
+      return _quoteResult / (10 ** abs(multiplier));
     }
   }
 

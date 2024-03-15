@@ -60,12 +60,12 @@ contract ChainlinkRelayer {
 
   /// @notice Parses the result from the aggregator into 18 decimals format
   function _parseResult(int256 _chainlinkResult) internal view returns (uint256 _result) {
-    if (multiplier > 0) {
-      return uint256(_chainlinkResult) * (10 ** uint256(multiplier));
-    } else if (multiplier < 0) {
-      return uint256(_chainlinkResult) / (10 ** abs(multiplier));
-    } else {
+    if (multiplier == 0) {
       return uint256(_chainlinkResult);
+    } else if (multiplier > 0) {
+      return uint256(_chainlinkResult) * (10 ** uint256(multiplier));
+    } else {
+      return uint256(_chainlinkResult) / (10 ** abs(multiplier));
     }
   }
 

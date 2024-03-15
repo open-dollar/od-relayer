@@ -73,7 +73,7 @@ contract QMath is Test {
 
     emit log_named_uint('Inverted', inverted);
 
-    uint256 _sqrtPriceX96 = Sqrt.sqrtAbs(int256(initPrice)) * (2 ** 96);
+    uint256 _sqrtPriceX96 = (Sqrt.sqrtAbs(int256(initPrice)) * (2 ** 96)) / 1e9;
 
     IAlgebraPool(pool).initialize(uint160(_sqrtPriceX96));
 

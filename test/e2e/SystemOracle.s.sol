@@ -105,19 +105,19 @@ contract OracleSetup is DSTestPlus {
 
   // --- Algebra ---
 
-  function test_Relayer() public {
+  function test_CamelotRelayer() public {
     assertEq(arbEthPriceSource.read(), ARB_ETH_PRICE);
   }
 
-  function test_RelayerSymbol() public {
+  function test_CamelotRelayerSymbol() public {
     assertEq(arbEthPriceSource.symbol(), 'ARB / WETH');
   }
 
-  function test_Relayer_Inverted() public {
+  function test_CamelotRelayer_Inverted() public {
     assertEq(ethArbPriceSource.read(), ETH_ARB_PRICE);
   }
 
-  function test_RelayerSymbolInverted() public {
+  function test_CamelotRelayerSymbolInverted() public {
     assertEq(ethArbPriceSource.symbol(), 'WETH / ARB');
   }
 
