@@ -61,7 +61,8 @@ abstract contract CommonSepolia is Script {
       _price = ((_basePrice * WAD) / _quotePrice);
     }
 
-    _sqrtPriceX96 = uint160(Sqrt.sqrtAbs(int256(_price)) * (2 ** 96));
+    // check math @ https://uniswap-v3-calculator.netlify.app/
+    _sqrtPriceX96 = uint160(Sqrt.sqrtAbs(int256(_price)) * (2 ** 96)) / 1e9;
   }
 
   /**

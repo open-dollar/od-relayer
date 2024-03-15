@@ -12,11 +12,13 @@ address constant TEST_GOVERNOR = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
 address constant SEPOLIA_SYSTEM_COIN = 0x36D197e6145B37b8E2c6Ed20B568860835b55584;
 address constant SEPOLIA_WETH = 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73;
 
+address constant SEPOLIA_SYSTEM_COIN_NEW = 0x04f2d31052c1f5012C3296710700719FDFe40B41;
+
 // Testnet Params
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
 uint256 constant INIT_WETH_AMOUNT = 1 ether;
-uint256 constant INIT_OD_AMOUNT = 4020 ether; // as of March 12, 2024
+uint256 constant INIT_OD_AMOUNT = 3895 ether; // as of March 15, 2024
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;

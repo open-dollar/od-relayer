@@ -34,18 +34,27 @@ contract MockSetupPostEnvironment is CommonSepolia {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_SEPOLIA_DEPLOYER_PK'));
+
+    // deploy mock WETH token
     mockWeth = new MintableERC20('Wrapped ETH', 'WETH', 18);
 
+    // create OD / WETH pool
     algebraFactory.createPool(SEPOLIA_SYSTEM_COIN, address(mockWeth));
     address _pool = algebraFactory.poolByPair(SEPOLIA_SYSTEM_COIN, address(mockWeth));
 
+    // calculate Q64.96
     uint160 _sqrtPriceX96 = initialPrice(INIT_OD_AMOUNT, INIT_WETH_AMOUNT, _pool);
+    console2.logUint(_sqrtPriceX96);
+
+    // initialize camelot pool price
     IAlgebraPool(_pool).initialize(_sqrtPriceX96);
 
+    // deploy camelotRelayer
     IBaseOracle _odWethOracle = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, SEPOLIA_SYSTEM_COIN, address(mockWeth), uint32(ORACLE_INTERVAL_TEST)
     );
 
+    // deploy chainlinkRelayer
     IBaseOracle chainlinkEthUSDPriceFeed =
       chainlinkRelayerFactory.deployChainlinkRelayer(SEPOLIA_CHAINLINK_ETH_USD_FEED, ORACLE_INTERVAL_TEST);
 
@@ -53,6 +62,7 @@ contract MockSetupPostEnvironment is CommonSepolia {
     systemCoinOracle =
       address(denominatedOracleFactory.deployDenominatedOracle(_odWethOracle, chainlinkEthUSDPriceFeed, false));
 
+    // add authorizations
     authOnlyFactories();
 
     // check pool balance before
@@ -72,12 +82,13 @@ contract MockSetupPostEnvironment is CommonSepolia {
 
     // add liquidity
     (int24 bottomTick, int24 topTick) = generateTickParams(IAlgebraPool(_pool));
-    _router.addLiquidity(bottomTick, topTick, uint128(100_000));
+    _router.addLiquidity(bottomTick, topTick, uint128(1 ether));
 
     // check pool balance after
     IERC20(SEPOLIA_SYSTEM_COIN).balanceOf(_pool);
     IERC20(mockWeth).balanceOf(_pool);
 
+    // log OD / USD denominated oracle address
     console2.logBytes20(bytes20(systemCoinOracle));
 
     vm.stopBroadcast();
@@ -124,9 +135,12 @@ contract MockSetupPostEnvironment is CommonSepolia {
     ODProxy(_proxy).execute(_basicActions, payload);
   }
 
+  // find tick and add 10X spacing on either side of pool price
   function generateTickParams(IAlgebraPool pool) public view returns (int24 bottomTick, int24 topTick) {
     (, int24 tick,,,,,) = pool.globalState();
     int24 tickSpacing = pool.tickSpacing();
+    console2.logInt(tick);
+    console2.logInt(tickSpacing);
     bottomTick = ((tick / tickSpacing) * tickSpacing) - 10 * tickSpacing;
     topTick = ((tick / tickSpacing) * tickSpacing) + 10 * tickSpacing;
   }
