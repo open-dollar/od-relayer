@@ -1,0 +1,36 @@
+{
+  "name": "od-relayer",
+  "version": "1.6.1",
+  "private": true,
+  "description": "Factory and relayer contracts for Open Dollar",
+  "homepage": "https://www.opendollar.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-dollar/od-relayer"
+  },
+  "license": "MIT",
+  "author": "Keyp",
+  "contributors": [
+    "pi0neerpat (https://github.com/pi0neerpat)",
+    "daopunk (https://github.com/daopunk)",
+    "wei3erHase (https://github.com/wei3erHase)",
+    "0xGorilla (https://github.com/0xGorilla)",
+    "0xJabberwock (https://github.com/0xJabberwock)",
+    "0xRaccoon (https://github.com/0xRaccoon)"
+  ],
+  "scripts": {
+    "build": "forge build",
+    "coverage": "forge coverage",
+    "lint:check": "yarn lint:sol && forge fmt --check",
+    "lint:fix": "sort-package-json && forge fmt && yarn lint:sol --fix",
+    "lint:sol": "cross-env solhint 'src/**/*.sol' 'test/**/*.sol'",
+    "test": "FOUNDRY_FUZZ_RUNS=128 FOUNDRY_FUZZ_MAX_TEST_REJECTS=1000000 forge test -vvv --ffi ",
+    "test:coverage": "forge coverage --report lcov && lcov --ignore-errors unused --remove lcov.info 'node_modules/*' 'script/*' 'test/*' 'src/contracts/for-test/*' 'src/libraries/*' -o lcov.info.pruned && mv lcov.info.pruned lcov.info && genhtml -o coverage-report lcov.info"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "solhint": "^4.5.2",
+    "solhint-plugin-defi-wonderland": "^1.1.3",
+    "sort-package-json": "^2.8.0"
+  }
+}

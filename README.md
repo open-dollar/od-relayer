@@ -14,10 +14,6 @@ This repository contains the smart contracts for the relayers used in Open Dolla
 - Technical Contracts docs: https://contracts.opendollar.com
 - Protocol Docs: https://docs.opendollar.com
 
-**Contract Deployments**
-
-Addresses for testnet can be found in the app: https://app.dev.opendollar.com/stats
-
 # Usage
 
 ## Selecting a Foundry profile
@@ -26,43 +22,16 @@ When running `forge`, you can specify the profile to use using the FOUNDRY_PROFI
 
 # Development
 
-## Anvil
+<!-- TODO -->
 
-Start Anvil:
+# Test
 
-```bash
-anvil
-```
-
-Next, copy the private key from anvil terminal output into your `.env`
-
-```
-ANVIL_RPC=http://127.0.0.1:8545
-ANVIL_ONE=0x....
-```
-
-Deploy the contracts locally:
+## Run Tests
 
 ```bash
-yarn deploy:anvil
+yarn test
 ```
-
-You now have a local anvil test environment with a locally deployed and instantiated version of the Open Dollar Protocol.
-
-> NOTE: You may need to manually verify that all required addresses were updated in `AnvilContracts.t.sol`. The script `parseAnvilDeployments.js` is not perfect.
-
-# Tests
 
 ## Coverage Reports
 
-Coverage testing is performed using lcov and a local Anvil fork of the contracts. First install [lcov for mac/linx](https://formulae.brew.sh/formula/lcov).
-
-1. Start Anvil using the instructions above.
-
-2. To generate a report, run the command:
-
-```bash
-yarn test:coverage
-```
-
-3. Open `coverage-report/index.html` to view the report.
+<!-- TODO -->
