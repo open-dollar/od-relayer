@@ -65,7 +65,7 @@ contract ChainlinkRelayer {
     } else if (multiplier > 0) {
       return uint256(_chainlinkResult) * (10 ** uint256(multiplier));
     } else {
-      return uint256(_chainlinkResult) / (10 ** abs(multiplier));
+      return uint256(_chainlinkResult) / (10 ** _abs(multiplier));
     }
   }
 
@@ -77,7 +77,7 @@ contract ChainlinkRelayer {
   }
 
   // @notice Return the absolute value of a signed integer as an unsigned integer
-  function abs(int256 x) internal pure returns (uint256) {
+  function _abs(int256 x) internal pure returns (uint256) {
     x >= 0 ? x : -x;
     return uint256(x);
   }

@@ -77,12 +77,12 @@ contract CamelotRelayer {
     } else if (multiplier > 0) {
       return _quoteResult * (10 ** uint256(multiplier));
     } else {
-      return _quoteResult / (10 ** abs(multiplier));
+      return _quoteResult / (10 ** _abs(multiplier));
     }
   }
 
   // @notice Return the absolute value of a signed integer as an unsigned integer
-  function abs(int256 x) internal pure returns (uint256) {
+  function _abs(int256 x) internal pure returns (uint256) {
     x >= 0 ? x : -x;
     return uint256(x);
   }

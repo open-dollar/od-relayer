@@ -43,7 +43,6 @@ contract SetupPostEnvironment is CommonSepolia {
      * note oracleRelayer will be set to systemOracle in odContracts post deploy script
      * code: `oracleRelayer.modifyParameters('systemCoinOracle', abi.encode(systemCoinOracle));`
      */
-
     vm.stopBroadcast();
   }
 }
