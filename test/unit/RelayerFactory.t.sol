@@ -53,6 +53,8 @@ abstract contract Base is DSTestPlus {
     denominatedOracleFactory = new DenominatedOracleFactory();
     label(address(denominatedOracleFactory), 'DenominatedOracleFactory');
 
+    denominatedOracleFactory.addAuthorization(authorizedAccount);
+
     vm.stopPrank();
   }
 
@@ -266,6 +268,111 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
     assertEq(
       address(chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold)),
       address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D)
+    );
+  }
+}
+
+contract Unit_DenominatedPriceOracleFactory_Constructor is Base {
+  event AddAuthorization(address _account);
+
+  modifier happyPath() {
+    vm.startPrank(user);
+    _;
+  }
+
+  function test_Emit_AddAuthorization() public happyPath {
+    vm.expectEmit();
+    emit AddAuthorization(user);
+
+    denominatedOracleFactory = new DenominatedOracleFactory();
+  }
+}
+
+contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
+  event NewDenominatedOracle(
+    address indexed _denominatedOracle, address _priceSource, address _denominationPriceSource, bool _inverted
+  );
+
+  modifier happyPath() {
+    vm.startPrank(authorizedAccount);
+    _;
+  }
+
+  function setUp() public override {
+    super.setUp();
+    vm.startPrank(authorizedAccount);
+    vm.mockCall(address(mockBaseToken), abi.encodeWithSignature('symbol()'), abi.encode('BaseToken'));
+    vm.mockCall(address(mockQuoteToken), abi.encodeWithSignature('symbol()'), abi.encode('QuoteToken'));
+    vm.mockCall(address(mockAggregator), abi.encodeWithSignature('description()'), abi.encode('Aggregator'));
+    vm.mockCall(address(mockBaseToken), abi.encodeWithSignature('decimals()'), abi.encode(18));
+    vm.mockCall(address(mockQuoteToken), abi.encodeWithSignature('decimals()'), abi.encode(18));
+    vm.mockCall(address(mockAggregator), abi.encodeWithSignature('decimals()'), abi.encode(18));
+
+    chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, 100);
+    _mockToken0(address(mockBaseToken));
+    _mockToken1(address(mockQuoteToken));
+    _mockGetPool(address(mockBaseToken), address(mockQuoteToken), address(mockAlgebraPool));
+
+    camelotRelayerChild = camelotRelayerFactory.deployAlgebraRelayer(
+      SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), 1000
+    );
+    vm.stopPrank();
+  }
+
+  function test_Deploy_RelayerChild() public happyPath {
+    vm.expectEmit();
+    emit NewDenominatedOracle(
+      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
+      address(camelotRelayerChild),
+      address(chainlinkRelayerChild),
+      false
+    );
+    denominatedOracleChild =
+      denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false);
+
+    string memory symbol =
+      string(abi.encodePacked('(', mockBaseToken.symbol(), ' / ', mockQuoteToken.symbol(), ') * (Aggregator)'));
+    assertEq(denominatedOracleChild.symbol(), symbol);
+  }
+
+  function test_Deploy_RelayerChildInverted() public happyPath {
+    vm.expectEmit();
+    emit NewDenominatedOracle(
+      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
+      address(camelotRelayerChild),
+      address(chainlinkRelayerChild),
+      true
+    );
+    denominatedOracleChild =
+      denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, true);
+
+    string memory symbol =
+      string(abi.encodePacked('(', mockBaseToken.symbol(), ' / ', mockQuoteToken.symbol(), ')^-1 / (Aggregator)'));
+    assertEq(denominatedOracleChild.symbol(), symbol);
+  }
+
+  function test_Set_Relayers() public happyPath {
+    denominatedOracleChild =
+      denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false);
+    assertEq(denominatedOracleFactory.oracleById(1), address(denominatedOracleChild));
+  }
+
+  function test_Emit_NewRelayer() public happyPath {
+    vm.expectEmit();
+    emit NewDenominatedOracle(
+      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
+      address(camelotRelayerChild),
+      address(chainlinkRelayerChild),
+      false
+    );
+    denominatedOracleChild =
+      denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false);
+  }
+
+  function test_Return_Relayer() public happyPath {
+    assertEq(
+      address(denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false)),
+      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a)
     );
   }
 }
