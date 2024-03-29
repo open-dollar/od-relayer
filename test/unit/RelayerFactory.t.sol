@@ -9,6 +9,11 @@ import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {CamelotRelayerChild} from '@contracts/factories/CamelotRelayerChild.sol';
+import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
+import {ChainlinkRelayerChild} from '@contracts/factories/ChainlinkRelayerChild.sol';
+import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
+import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
+import {DenominatedOracleChild} from '@contracts/factories/DenominatedOracleChild.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 
 abstract contract Base is DSTestPlus {
@@ -21,18 +26,29 @@ abstract contract Base is DSTestPlus {
   IERC20Metadata mockBaseToken = IERC20Metadata(mockContract('BaseToken'));
   IERC20Metadata mockQuoteToken = IERC20Metadata(mockContract('QuoteToken'));
 
-  CamelotRelayerFactory relayerFactory;
-  CamelotRelayerChild relayerChild = CamelotRelayerChild(
-    label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild')
-  );
+  CamelotRelayerFactory camelotRelayerFactory;
+  IBaseOracle camelotRelayerChild;
+  //  = CamelotRelayerChild(
+  //   label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild')
+  // );
+
+  ChainlinkRelayerFactory chainlinkRelayerFactory;
+  IBaseOracle chainlinkRelayerChild;
+
+  address mockAggregator = mockContract('ChainlinkAggregator');
 
   function setUp() public virtual {
     vm.startPrank(deployer);
 
-    relayerFactory = new CamelotRelayerFactory();
-    label(address(relayerFactory), 'CamelotRelayerFactory');
+    camelotRelayerFactory = new CamelotRelayerFactory();
+    label(address(camelotRelayerFactory), 'CamelotRelayerFactory');
 
-    relayerFactory.addAuthorization(authorizedAccount);
+    camelotRelayerFactory.addAuthorization(authorizedAccount);
+
+    chainlinkRelayerFactory = new ChainlinkRelayerFactory();
+    label(address(chainlinkRelayerFactory), 'ChainlinkRelayerFactory');
+
+    chainlinkRelayerFactory.addAuthorization(authorizedAccount);
 
     vm.stopPrank();
   }
@@ -56,15 +72,17 @@ abstract contract Base is DSTestPlus {
   function _mockSymbol(string memory _symbol) internal {
     vm.mockCall(address(mockBaseToken), abi.encodeWithSignature('symbol()'), abi.encode(_symbol));
     vm.mockCall(address(mockQuoteToken), abi.encodeWithSignature('symbol()'), abi.encode(_symbol));
+    vm.mockCall(address(mockAggregator), abi.encodeWithSignature('description()'), abi.encode(_symbol));
   }
 
   function _mockDecimals(uint8 _decimals) internal {
     vm.mockCall(address(mockBaseToken), abi.encodeWithSignature('decimals()'), abi.encode(_decimals));
     vm.mockCall(address(mockQuoteToken), abi.encodeWithSignature('decimals()'), abi.encode(_decimals));
+    vm.mockCall(address(mockAggregator), abi.encodeWithSignature('decimals()'), abi.encode(_decimals));
   }
 }
 
-contract Unit_RelayerFactory_Constructor is Base {
+contract Unit_CamelotRelayerFactory_Constructor is Base {
   event AddAuthorization(address _account);
 
   modifier happyPath() {
@@ -76,16 +94,15 @@ contract Unit_RelayerFactory_Constructor is Base {
     vm.expectEmit();
     emit AddAuthorization(user);
 
-    relayerFactory = new CamelotRelayerFactory();
+    camelotRelayerFactory = new CamelotRelayerFactory();
   }
 }
 
-contract Unit_RelayerFactory_DeployRelayer is Base {
+contract Unit_RelayerFactory_DeployCamelotRelayer is Base {
   event NewAlgebraRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
 
   modifier happyPath(string memory _symbol, uint8 _decimals) {
     vm.startPrank(authorizedAccount);
-
     _assumeHappyPath(_decimals);
     _mockValues(_symbol, _decimals);
     _;
@@ -106,7 +123,7 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   function test_Revert_Unauthorized(uint32 _quotePeriod) public {
     vm.expectRevert('Unauthorized');
 
-    relayerFactory.deployAlgebraRelayer(
+    camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
     );
   }
@@ -116,16 +133,17 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(
+    vm.expectEmit();
+    emit NewAlgebraRelayer(
+      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A), address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
+    camelotRelayerChild = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
     );
 
-    // assertEq(address(relayerChild).code, type(CamelotRelayerChild).runtimeCode);
-
+    string memory concatSymbol = string(abi.encodePacked(_symbol, ' / ', _symbol));
     // params
-    assertEq(relayerChild.baseToken(), address(mockBaseToken));
-    assertEq(relayerChild.quoteToken(), address(mockQuoteToken));
-    assert(relayerChild.quotePeriod() == _quotePeriod);
+    assertEq(camelotRelayerChild.symbol(), concatSymbol);
   }
 
   function test_Set_Relayers(
@@ -133,11 +151,11 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     string memory _symbol,
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
-    relayerFactory.deployAlgebraRelayer(
+    camelotRelayerChild = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
     );
 
-    assertEq(relayerFactory.relayerById(1), address(relayerChild));
+    assertEq(camelotRelayerFactory.relayerById(1), address(camelotRelayerChild));
   }
 
   function test_Emit_NewRelayer(
@@ -146,9 +164,11 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
     vm.expectEmit();
-    emit NewAlgebraRelayer(address(relayerChild), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
+    emit NewAlgebraRelayer(
+      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A), address(mockBaseToken), address(mockQuoteToken), _quotePeriod
+    );
 
-    relayerFactory.deployAlgebraRelayer(
+    camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
     );
   }
@@ -160,11 +180,91 @@ contract Unit_RelayerFactory_DeployRelayer is Base {
   ) public happyPath(_symbol, _decimals) {
     assertEq(
       address(
-        relayerFactory.deployAlgebraRelayer(
+        camelotRelayerFactory.deployAlgebraRelayer(
           SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
         )
       ),
-      address(relayerChild)
+      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A)
+    );
+  }
+}
+
+contract Unit_ChainlinkRelayerFactory_Constructor is Base {
+  event AddAuthorization(address _account);
+
+  modifier happyPath() {
+    vm.startPrank(user);
+    _;
+  }
+
+  function test_Emit_AddAuthorization() public happyPath {
+    vm.expectEmit();
+    emit AddAuthorization(user);
+
+    chainlinkRelayerFactory = new ChainlinkRelayerFactory();
+  }
+}
+
+contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
+  event NewChainlinkRelayer(address indexed _chainlinkRelayer, address _aggregator, uint256 _staleThreshold);
+
+  modifier happyPath(string memory _symbol, uint8 _decimals, uint256 _staleThreshold) {
+    vm.startPrank(authorizedAccount);
+    vm.assume(_staleThreshold > 0);
+    _assumeHappyPath(_decimals);
+    _mockSymbol(_symbol);
+    _mockDecimals(_decimals);
+    _;
+  }
+
+  function _assumeHappyPath(uint8 _decimals) internal pure {
+    vm.assume(_decimals <= 18 && _decimals > 0);
+  }
+
+  function test_Deploy_RelayerChild(
+    string memory _symbol,
+    uint8 _decimals,
+    uint256 _staleThreshold
+  ) public happyPath(_symbol, _decimals, _staleThreshold) {
+    vm.expectEmit();
+    emit NewChainlinkRelayer(address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D), mockAggregator, _staleThreshold);
+
+    chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold);
+    assertEq(chainlinkRelayerChild.symbol(), _symbol);
+  }
+
+  function test_Set_Relayers(
+    string memory _symbol,
+    uint8 _decimals,
+    uint256 _staleThreshold
+  ) public happyPath(_symbol, _decimals, _staleThreshold) {
+    chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold);
+
+    assertEq(chainlinkRelayerFactory.relayerById(1), address(chainlinkRelayerChild));
+  }
+
+  function test_Emit_NewRelayer(
+    string memory _symbol,
+    uint8 _decimals,
+    uint256 _staleThreshold
+  ) public happyPath(_symbol, _decimals, _staleThreshold) {
+    vm.expectEmit();
+    emit NewChainlinkRelayer(address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D), mockAggregator, _staleThreshold);
+
+    chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold);
+    assertEq(chainlinkRelayerChild.symbol(), _symbol);
+  }
+
+  function test_Return_Relayer(
+    string memory _symbol,
+    uint8 _decimals,
+    uint256 _staleThreshold
+  ) public happyPath(_symbol, _decimals, _staleThreshold) {
+    assertEq(
+      address(
+        chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold)
+      ),
+      address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D)
     );
   }
 }

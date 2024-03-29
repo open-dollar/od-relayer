@@ -13,10 +13,7 @@
   "contributors": [
     "pi0neerpat (https://github.com/pi0neerpat)",
     "daopunk (https://github.com/daopunk)",
-    "wei3erHase (https://github.com/wei3erHase)",
-    "0xGorilla (https://github.com/0xGorilla)",
-    "0xJabberwock (https://github.com/0xJabberwock)",
-    "0xRaccoon (https://github.com/0xRaccoon)"
+    "MrDeadce11 (https://github.com/MrDeadCe11)"
   ],
   "scripts": {
     "build": "forge build",
