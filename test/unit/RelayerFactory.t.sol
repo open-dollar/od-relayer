@@ -28,12 +28,12 @@ abstract contract Base is DSTestPlus {
 
   CamelotRelayerFactory camelotRelayerFactory;
   IBaseOracle camelotRelayerChild;
-  //  = CamelotRelayerChild(
-  //   label(address(0x0000000000000000000000007f85e9e000597158aed9320b5a5e11ab8cc7329a), 'CamelotRelayerChild')
-  // );
 
   ChainlinkRelayerFactory chainlinkRelayerFactory;
   IBaseOracle chainlinkRelayerChild;
+
+  DenominatedOracleFactory denominatedOracleFactory;
+  IBaseOracle denominatedOracleChild;
 
   address mockAggregator = mockContract('ChainlinkAggregator');
 
@@ -49,6 +49,9 @@ abstract contract Base is DSTestPlus {
     label(address(chainlinkRelayerFactory), 'ChainlinkRelayerFactory');
 
     chainlinkRelayerFactory.addAuthorization(authorizedAccount);
+
+    denominatedOracleFactory = new DenominatedOracleFactory();
+    label(address(denominatedOracleFactory), 'DenominatedOracleFactory');
 
     vm.stopPrank();
   }
@@ -261,9 +264,7 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
     uint256 _staleThreshold
   ) public happyPath(_symbol, _decimals, _staleThreshold) {
     assertEq(
-      address(
-        chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold)
-      ),
+      address(chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold)),
       address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D)
     );
   }
