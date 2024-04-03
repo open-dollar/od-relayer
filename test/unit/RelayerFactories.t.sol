@@ -106,6 +106,8 @@ contract Unit_CamelotRelayerFactory_Constructor is Base {
 contract Unit_RelayerFactory_DeployCamelotRelayer is Base {
   event NewAlgebraRelayer(address indexed _relayer, address _baseToken, address _quoteToken, uint32 _quotePeriod);
 
+  address algebraRelayer = 0x7F85e9e000597158AED9320B5A5E11AB8cC7329A;
+
   modifier happyPath(string memory _symbol, uint8 _decimals) {
     vm.startPrank(authorizedAccount);
     _assumeHappyPath(_decimals);
@@ -139,9 +141,7 @@ contract Unit_RelayerFactory_DeployCamelotRelayer is Base {
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
     vm.expectEmit();
-    emit NewAlgebraRelayer(
-      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A), address(mockBaseToken), address(mockQuoteToken), _quotePeriod
-    );
+    emit NewAlgebraRelayer(address(algebraRelayer), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
     camelotRelayerChild = camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
     );
@@ -169,9 +169,7 @@ contract Unit_RelayerFactory_DeployCamelotRelayer is Base {
     uint8 _decimals
   ) public happyPath(_symbol, _decimals) {
     vm.expectEmit();
-    emit NewAlgebraRelayer(
-      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A), address(mockBaseToken), address(mockQuoteToken), _quotePeriod
-    );
+    emit NewAlgebraRelayer(address(algebraRelayer), address(mockBaseToken), address(mockQuoteToken), _quotePeriod);
 
     camelotRelayerFactory.deployAlgebraRelayer(
       SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
@@ -189,7 +187,7 @@ contract Unit_RelayerFactory_DeployCamelotRelayer is Base {
           SEPOLIA_ALGEBRA_FACTORY, address(mockBaseToken), address(mockQuoteToken), _quotePeriod
         )
       ),
-      address(0x7F85e9e000597158AED9320B5A5E11AB8cC7329A)
+      address(algebraRelayer)
     );
   }
 }
@@ -213,6 +211,8 @@ contract Unit_ChainlinkRelayerFactory_Constructor is Base {
 contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
   event NewChainlinkRelayer(address indexed _chainlinkRelayer, address _aggregator, uint256 _staleThreshold);
 
+  address chainlinkRelayer = 0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D;
+
   modifier happyPath(string memory _symbol, uint8 _decimals, uint256 _staleThreshold) {
     vm.startPrank(authorizedAccount);
     vm.assume(_staleThreshold > 0);
@@ -232,7 +232,7 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
     uint256 _staleThreshold
   ) public happyPath(_symbol, _decimals, _staleThreshold) {
     vm.expectEmit();
-    emit NewChainlinkRelayer(address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D), mockAggregator, _staleThreshold);
+    emit NewChainlinkRelayer(address(chainlinkRelayer), mockAggregator, _staleThreshold);
 
     chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold);
     assertEq(chainlinkRelayerChild.symbol(), _symbol);
@@ -254,7 +254,7 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
     uint256 _staleThreshold
   ) public happyPath(_symbol, _decimals, _staleThreshold) {
     vm.expectEmit();
-    emit NewChainlinkRelayer(address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D), mockAggregator, _staleThreshold);
+    emit NewChainlinkRelayer(address(chainlinkRelayer), mockAggregator, _staleThreshold);
 
     chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold);
     assertEq(chainlinkRelayerChild.symbol(), _symbol);
@@ -267,7 +267,7 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
   ) public happyPath(_symbol, _decimals, _staleThreshold) {
     assertEq(
       address(chainlinkRelayerFactory.deployChainlinkRelayer(mockAggregator, _staleThreshold)),
-      address(0x56D9e6a12fC3E3f589Ee5E685C9f118D62ce9C8D)
+      address(chainlinkRelayer)
     );
   }
 }
@@ -292,6 +292,8 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   event NewDenominatedOracle(
     address indexed _denominatedOracle, address _priceSource, address _denominationPriceSource, bool _inverted
   );
+
+  address denominatedOracle = 0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a;
 
   modifier happyPath() {
     vm.startPrank(authorizedAccount);
@@ -322,10 +324,7 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   function test_Deploy_RelayerChild() public happyPath {
     vm.expectEmit();
     emit NewDenominatedOracle(
-      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
-      address(camelotRelayerChild),
-      address(chainlinkRelayerChild),
-      false
+      address(denominatedOracle), address(camelotRelayerChild), address(chainlinkRelayerChild), false
     );
     denominatedOracleChild =
       denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false);
@@ -338,10 +337,7 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   function test_Deploy_RelayerChildInverted() public happyPath {
     vm.expectEmit();
     emit NewDenominatedOracle(
-      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
-      address(camelotRelayerChild),
-      address(chainlinkRelayerChild),
-      true
+      address(denominatedOracle), address(camelotRelayerChild), address(chainlinkRelayerChild), true
     );
     denominatedOracleChild =
       denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, true);
@@ -360,10 +356,7 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   function test_Emit_NewRelayer() public happyPath {
     vm.expectEmit();
     emit NewDenominatedOracle(
-      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a),
-      address(camelotRelayerChild),
-      address(chainlinkRelayerChild),
-      false
+      address(denominatedOracle), address(camelotRelayerChild), address(chainlinkRelayerChild), false
     );
     denominatedOracleChild =
       denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false);
@@ -372,7 +365,7 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   function test_Return_Relayer() public happyPath {
     assertEq(
       address(denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false)),
-      address(0xb2A72B7BA8156A59fD84c61e5eF539d385D8652a)
+      address(denominatedOracle)
     );
   }
 }
