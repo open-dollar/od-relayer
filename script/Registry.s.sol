@@ -18,7 +18,7 @@ address constant SEPOLIA_SYSTEM_COIN_NEW = 0x04f2d31052c1f5012C3296710700719FDFe
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
 uint256 constant INIT_WETH_AMOUNT = 1 ether;
-uint256 constant INIT_OD_AMOUNT = 3895 ether; // as of March 15, 2024
+uint256 constant INIT_OD_AMOUNT = 3500 ether; // $3300 as of April 3, 2024
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
