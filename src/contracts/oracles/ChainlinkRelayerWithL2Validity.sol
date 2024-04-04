@@ -2,7 +2,7 @@
 pragma solidity 0.7.6;
 
 import {ChainlinkRelayer} from '@contracts/oracles/ChainlinkRelayer.sol';
-import {DataConsumerSequencerCheck} from '@contracts/utils/DataConsumerSequencerCheck.sol';
+import {DataConsumerSequencerCheck} from '@contracts/oracles/DataConsumerSequencerCheck.sol';
 
 contract ChainlinkRelayerWithL2Validity is ChainlinkRelayer, DataConsumerSequencerCheck {
   constructor(
