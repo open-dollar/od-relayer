@@ -6,20 +6,17 @@ import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 /**
  * @title  ChainlinkRelayer
  * @notice This contracts transforms a Chainlink price feed into a standard IBaseOracle feed
- *         It also verifies that the reading is new enough, compared to a staleThreshold
+ *         It also verifies that the reading is new enough, compared to a STALE_THRESHOLD
  */
 contract ChainlinkRelayer {
-  // --- Registry ---
+  uint256 public immutable STALE_THRESHOLD;
+  int256 public immutable MULTIPLIER;
 
-  IChainlinkOracle public chainlinkFeed;
+  // --- Registry ---
+  IChainlinkOracle public CHAINLINK_FEED;
 
   // --- Data ---
-
   string public symbol;
-  int256 public multiplier;
-  uint256 public staleThreshold;
-
-  // --- Init ---
 
   /**
    * @param  _aggregator The address of the Chainlink aggregator
@@ -29,16 +26,16 @@ contract ChainlinkRelayer {
     require(_aggregator != address(0), 'NullAggregator');
     require(_staleThreshold != 0, 'NullStaleThreshold');
 
-    staleThreshold = _staleThreshold;
-    chainlinkFeed = IChainlinkOracle(_aggregator);
+    STALE_THRESHOLD = _staleThreshold;
+    CHAINLINK_FEED = IChainlinkOracle(_aggregator);
 
-    multiplier = int256(18) - int256(uint256(chainlinkFeed.decimals()));
-    symbol = chainlinkFeed.description();
+    MULTIPLIER = int256(18) - int256(uint256(CHAINLINK_FEED.decimals()));
+    symbol = CHAINLINK_FEED.description();
   }
 
   function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
     // Fetch values from Chainlink
-    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
+    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = CHAINLINK_FEED.latestRoundData();
 
     // Parse the quote into 18 decimals format
     _result = _parseResult(_aggregatorResult);
@@ -49,7 +46,7 @@ contract ChainlinkRelayer {
 
   function read() external view returns (uint256 _result) {
     // Fetch values from Chainlink
-    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
+    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = CHAINLINK_FEED.latestRoundData();
 
     // Revert if price is invalid
     require(_aggregatorResult != 0 || _isValidFeed(_aggregatorTimestamp), 'InvalidPriceFeed');
@@ -60,20 +57,20 @@ contract ChainlinkRelayer {
 
   /// @notice Parses the result from the aggregator into 18 decimals format
   function _parseResult(int256 _chainlinkResult) internal view returns (uint256 _result) {
-    if (multiplier == 0) {
+    if (MULTIPLIER == 0) {
       return uint256(_chainlinkResult);
-    } else if (multiplier > 0) {
-      return uint256(_chainlinkResult) * (10 ** uint256(multiplier));
+    } else if (MULTIPLIER > 0) {
+      return uint256(_chainlinkResult) * (10 ** uint256(MULTIPLIER));
     } else {
-      return uint256(_chainlinkResult) / (10 ** _abs(multiplier));
+      return uint256(_chainlinkResult) / (10 ** _abs(MULTIPLIER));
     }
   }
 
-  /// @notice Checks if the feed is valid, considering the staleThreshold and the feed timestamp
+  /// @notice Checks if the feed is valid, considering the STALE_THRESHOLD and the feed timestamp
   function _isValidFeed(uint256 _feedTimestamp) internal view returns (bool _valid) {
     uint256 _now = block.timestamp;
     if (_feedTimestamp > _now) return false;
-    return _now - _feedTimestamp <= staleThreshold;
+    return _now - _feedTimestamp <= STALE_THRESHOLD;
   }
 
   // @notice Return the absolute value of a signed integer as an unsigned integer

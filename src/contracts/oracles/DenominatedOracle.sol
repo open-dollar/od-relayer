@@ -11,23 +11,20 @@ import {Math, WAD} from '@libraries/Math.sol';
 contract DenominatedOracle {
   using Math for uint256;
 
-  // --- Registry ---
+  bool public immutable INVERTED;
 
+  // --- Registry ---
   IBaseOracle public priceSource;
   IBaseOracle public denominationPriceSource;
 
   // --- Data ---
-
   string public symbol;
-  bool public inverted;
-
-  // --- Init ---
 
   /**
    *
    * @param  _priceSource Address of the base price source that is used to calculate the price
    * @param  _denominationPriceSource Address of the denomination price source that is used to calculate price
-   * @param  _inverted Flag that indicates whether the price source quote should be inverted or not
+   * @param  _inverted Flag that indicates whether the price source quote should be INVERTED or not
    */
   constructor(IBaseOracle _priceSource, IBaseOracle _denominationPriceSource, bool _inverted) {
     require(address(_priceSource) != address(0), 'Denom_NullPriceSource');
@@ -35,7 +32,7 @@ contract DenominatedOracle {
 
     priceSource = _priceSource;
     denominationPriceSource = _denominationPriceSource;
-    inverted = _inverted;
+    INVERTED = _inverted;
 
     if (_inverted) {
       symbol = string(abi.encodePacked('(', priceSource.symbol(), ')^-1 / (', denominationPriceSource.symbol(), ')'));
@@ -49,7 +46,7 @@ contract DenominatedOracle {
     (uint256 _denominationPriceSourceValue, bool _denominationPriceSourceValidity) =
       denominationPriceSource.getResultWithValidity();
 
-    if (inverted) {
+    if (INVERTED) {
       if (_priceSourceValue == 0) return (0, false);
       _priceSourceValue = WAD.wdiv(_priceSourceValue);
     }
@@ -62,7 +59,7 @@ contract DenominatedOracle {
     uint256 _priceSourceValue = priceSource.read();
     uint256 _denominationPriceSourceValue = denominationPriceSource.read();
 
-    if (inverted) {
+    if (INVERTED) {
       if (_priceSourceValue == 0) revert('InvalidPriceFeed');
       _priceSourceValue = WAD.wdiv(_priceSourceValue);
     }
