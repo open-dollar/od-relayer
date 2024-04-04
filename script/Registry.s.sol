@@ -18,7 +18,7 @@ address constant SEPOLIA_SYSTEM_COIN_NEW = 0x04f2d31052c1f5012C3296710700719FDFe
 uint256 constant ORACLE_INTERVAL_TEST = 1 minutes;
 uint256 constant MINT_AMOUNT = 1_000_000 ether;
 uint256 constant INIT_WETH_AMOUNT = 1 ether;
-uint256 constant INIT_OD_AMOUNT = 3895 ether; // as of March 15, 2024
+uint256 constant INIT_OD_AMOUNT = 3500 ether; // $3300 as of April 3, 2024
 
 // Members for governance
 address constant H = 0x37c5B029f9c3691B3d47cb024f84E5E257aEb0BB;
@@ -84,14 +84,17 @@ address constant MAINNET_DENOMINATED_WSTETH_USD_ORACLE = 0xCeE84f86d76bADa122621
 // Oracles params
 uint256 constant MAINNET_ORACLE_INTERVAL = 1 hours;
 
-// Chainlink feeds to USD
+// Chainlink price feeds to USD
 address constant MAINNET_CHAINLINK_ARB_USD_FEED = 0xb2A824043730FE05F3DA2efaFa1CBbe83fa548D6;
 address constant MAINNET_CHAINLINK_ETH_USD_FEED = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
 
-// Chainlink feeds to ETH
+// Chainlink price feeds to ETH
 address constant MAINNET_CHAINLINK_WSTETH_ETH_FEED = 0xb523AE262D20A936BC152e6023996e46FDC2A95D;
 address constant MAINNET_CHAINLINK_CBETH_ETH_FEED = 0xa668682974E3f121185a3cD94f00322beC674275;
 address constant MAINNET_CHAINLINK_RETH_ETH_FEED = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
+
+// Chainlink sequencer feed for Arbitrum One
+address constant MAINNET_CHAINLINK_SEQUENCER_FEED = 0xFdB631F5EE196F0ed6FAa767959853A9F217697D;
 
 address constant ETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
 address constant ARB = 0x912CE59144191C1204E64559FE8253a0e49E6548;
