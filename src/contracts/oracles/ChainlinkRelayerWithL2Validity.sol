@@ -13,18 +13,12 @@ contract ChainlinkRelayerWithL2Validity is ChainlinkRelayer, DataConsumerSequenc
   ) ChainlinkRelayer(_priceAggregator, _staleThreshold) DataConsumerSequencerCheck(_sequencerAggregator, _gracePeriod) {}
 
   function getResultWithValidity() public view override returns (uint256 _result, bool _validity) {
-    if (getSequencerFeedValidation()) {
-      super.getResultWithValidity();
-    } else {
-      revert('SequencerDown');
-    }
+    require(getSequencerFeedValidation(), 'SequencerDown');
+    super.getResultWithValidity();
   }
 
   function read() public view override returns (uint256 _result) {
-    if (getSequencerFeedValidation()) {
-      super.read();
-    } else {
-      revert('SequencerDown');
-    }
+    require(getSequencerFeedValidation(), 'SequencerDown');
+    _result = super.read();
   }
 }

@@ -6,6 +6,7 @@ import {
   MAINNET_ALGEBRA_FACTORY,
   MAINNET_CHAINLINK_ETH_USD_FEED,
   MAINNET_CHAINLINK_ARB_USD_FEED,
+  MAINNET_CHAINLINK_SEQUENCER_FEED,
   ETH,
   ARB,
   ETH_ARB_POOL
@@ -15,6 +16,7 @@ import {CamelotRelayer} from '@contracts/oracles/CamelotRelayer.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {ChainlinkRelayer} from '@contracts/oracles/ChainlinkRelayer.sol';
+import {ChainlinkRelayerWithL2Validity} from '@contracts/oracles/ChainlinkRelayerWithL2Validity.sol';
 import {IChainlinkRelayer} from '@interfaces/oracles/IChainlinkRelayer.sol';
 import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 import {DenominatedOracle} from '@contracts/oracles/DenominatedOracle.sol';
@@ -55,10 +57,12 @@ contract OracleSetup is DSTestPlus {
   uint256 USD_ARB_PRICE = 923_178_241_620_339_420; // price of USD in ARB
 
   IBaseOracle public ethUsdPriceSource; // from Chainlink
+  IBaseOracle public ethUsdPriceSourceL2Verified; // from Chainlink
   IBaseOracle public ethArbPriceSource; // from Camelot pool
   IBaseOracle public arbEthPriceSource; // from Camelot pool
 
   IDenominatedOracle public arbUsdPriceSource;
+  IDenominatedOracle public arbUsdPriceSourceL2Verified;
   IDenominatedOracle public arbUsdPriceSourceInverted;
 
   /**
@@ -71,6 +75,13 @@ contract OracleSetup is DSTestPlus {
 
     // --- Chainlink ---
     ethUsdPriceSource = IBaseOracle(address(new ChainlinkRelayer(MAINNET_CHAINLINK_ETH_USD_FEED, 1 days)));
+    ethUsdPriceSourceL2Verified = IBaseOracle(
+      address(
+        new ChainlinkRelayerWithL2Validity(
+          MAINNET_CHAINLINK_ETH_USD_FEED, MAINNET_CHAINLINK_SEQUENCER_FEED, 1 days, 1 hours
+        )
+      )
+    );
 
     // --- Camelot ---
     arbEthPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, 1 days))); // correct
@@ -78,6 +89,8 @@ contract OracleSetup is DSTestPlus {
 
     // --- Denominated ---
     arbUsdPriceSource = IDenominatedOracle(address(new DenominatedOracle(arbEthPriceSource, ethUsdPriceSource, false)));
+    arbUsdPriceSourceL2Verified =
+      IDenominatedOracle(address(new DenominatedOracle(arbEthPriceSource, ethUsdPriceSourceL2Verified, false)));
     arbUsdPriceSourceInverted =
       IDenominatedOracle(address(new DenominatedOracle(ethArbPriceSource, ethUsdPriceSource, true)));
   }
@@ -99,8 +112,17 @@ contract OracleSetup is DSTestPlus {
     assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
   }
 
+  function test_ChainlinkRelayerL2Verified() public {
+    uint256 price = ethUsdPriceSourceL2Verified.read();
+    assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
+  }
+
   function test_ChainlinkRelayerSymbol() public {
     assertEq(ethUsdPriceSource.symbol(), 'ETH / USD');
+  }
+
+  function test_ChainlinkRelayerSymbolL2Verified() public {
+    assertEq(ethUsdPriceSourceL2Verified.symbol(), 'ETH / USD');
   }
 
   // --- Algebra ---
@@ -127,8 +149,16 @@ contract OracleSetup is DSTestPlus {
     assertEq(arbUsdPriceSource.read(), ARB_USD_PRICE);
   }
 
+  function test_DenominatedOracleL2Verified() public {
+    assertEq(arbUsdPriceSourceL2Verified.read(), ARB_USD_PRICE);
+  }
+
   function test_DenominatedOracleSymbol() public {
     assertEq(arbUsdPriceSource.symbol(), '(ARB / WETH) * (ETH / USD)');
+  }
+
+  function test_DenominatedOracleSymbolL2Verified() public {
+    assertEq(arbUsdPriceSourceL2Verified.symbol(), '(ARB / WETH) * (ETH / USD)');
   }
 
   function test_DenominatedInvertedOracle() public {
