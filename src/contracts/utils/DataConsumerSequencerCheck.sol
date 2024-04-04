@@ -4,11 +4,10 @@ pragma solidity 0.7.6;
 import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
 
 contract DataConsumerSequencerCheck {
+  uint256 public immutable GRACE_PERIOD;
+
   // --- Registry ---
   IChainlinkOracle public immutable SEQUENCER_UPTIME_FEED;
-
-  // --- Data ---
-  uint256 public immutable GRACE_PERIOD;
 
   /**
    * @param  _aggregator The address of the Chainlink aggregator
@@ -22,5 +21,14 @@ contract DataConsumerSequencerCheck {
     GRACE_PERIOD = _gracePeriod;
   }
 
-  function getChainlinkDataFeedLatestAnswer() external view returns (int256) {}
+  /// @notice return false for invalid sequencer, true for valid sequencer
+  function getSequencerFeedValidation() public view returns (bool) {
+    (uint256 _roundId, int256 _answer, uint256 _startedAt, uint256 _updatedAt, uint256 _answeredInRound) =
+      SEQUENCER_UPTIME_FEED.latestRoundData();
+    if (_answer != 0) return false;
+
+    uint256 timeSinceOnline = block.timestamp - _startedAt;
+    if (timeSinceOnline < GRACE_PERIOD) return false;
+    else return true;
+  }
 }

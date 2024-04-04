@@ -13,7 +13,7 @@ contract ChainlinkRelayer {
   int256 public immutable MULTIPLIER;
 
   // --- Registry ---
-  IChainlinkOracle public CHAINLINK_FEED;
+  IChainlinkOracle public chainlinkFeed;
 
   // --- Data ---
   string public symbol;
@@ -27,15 +27,15 @@ contract ChainlinkRelayer {
     require(_staleThreshold != 0, 'NullStaleThreshold');
 
     STALE_THRESHOLD = _staleThreshold;
-    CHAINLINK_FEED = IChainlinkOracle(_aggregator);
+    chainlinkFeed = IChainlinkOracle(_aggregator);
 
-    MULTIPLIER = int256(18) - int256(uint256(CHAINLINK_FEED.decimals()));
-    symbol = CHAINLINK_FEED.description();
+    MULTIPLIER = int256(18) - int256(uint256(chainlinkFeed.decimals()));
+    symbol = chainlinkFeed.description();
   }
 
-  function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
+  function getResultWithValidity() public view virtual returns (uint256 _result, bool _validity) {
     // Fetch values from Chainlink
-    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = CHAINLINK_FEED.latestRoundData();
+    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
 
     // Parse the quote into 18 decimals format
     _result = _parseResult(_aggregatorResult);
@@ -44,9 +44,9 @@ contract ChainlinkRelayer {
     _validity = _aggregatorResult > 0 && _isValidFeed(_aggregatorTimestamp);
   }
 
-  function read() external view returns (uint256 _result) {
+  function read() public view virtual returns (uint256 _result) {
     // Fetch values from Chainlink
-    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = CHAINLINK_FEED.latestRoundData();
+    (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
 
     // Revert if price is invalid
     require(_aggregatorResult != 0 || _isValidFeed(_aggregatorTimestamp), 'InvalidPriceFeed');
@@ -73,7 +73,7 @@ contract ChainlinkRelayer {
     return _now - _feedTimestamp <= STALE_THRESHOLD;
   }
 
-  // @notice Return the absolute value of a signed integer as an unsigned integer
+  /// @notice Return the absolute value of a signed integer as an unsigned integer
   function _abs(int256 x) internal pure returns (uint256) {
     x >= 0 ? x : -x;
     return uint256(x);
