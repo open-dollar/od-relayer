@@ -14,7 +14,7 @@ contract ChainlinkRelayerWithL2Validity is ChainlinkRelayer, DataConsumerSequenc
 
   function getResultWithValidity() public view override returns (uint256 _result, bool _validity) {
     require(getSequencerFeedValidation(), 'SequencerDown');
-    super.getResultWithValidity();
+    (_result, _validity) = super.getResultWithValidity();
   }
 
   function read() public view override returns (uint256 _result) {
