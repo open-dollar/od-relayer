@@ -112,13 +112,25 @@ contract OracleSetup is DSTestPlus {
     assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
   }
 
-  function test_ChainlinkRelayerL2Verified() public {
-    uint256 price = ethUsdPriceSourceL2Verified.read();
+  function test_ChainlinkRelayerWithValidity() public {
+    (uint256 price, bool valid) = ethUsdPriceSource.getResultWithValidity();
+    assertTrue(valid);
     assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
   }
 
   function test_ChainlinkRelayerSymbol() public {
     assertEq(ethUsdPriceSource.symbol(), 'ETH / USD');
+  }
+
+  function test_ChainlinkRelayerL2Verified() public {
+    uint256 price = ethUsdPriceSourceL2Verified.read();
+    assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
+  }
+
+  function test_ChainlinkRelayerL2VerifiedWithValidity() public {
+    (uint256 price, bool valid) = ethUsdPriceSourceL2Verified.getResultWithValidity();
+    assertTrue(valid);
+    assertTrue(price >= CHAINLINK_ETH_USD_PRICE_L && price <= CHAINLINK_ETH_USD_PRICE_H);
   }
 
   function test_ChainlinkRelayerSymbolL2Verified() public {
