@@ -14,8 +14,8 @@ contract DataConsumerSequencerCheck {
    * @param  _gracePeriod The threshold before accepting answers after an outage
    */
   constructor(address _aggregator, uint256 _gracePeriod) {
-    require(_aggregator != address(0), 'NullAggregator');
-    require(_gracePeriod != 0, 'NullGracePeriod');
+    require(_aggregator != address(0)); // error msg will not show from constructor revert
+    require(_gracePeriod != 0);
 
     SEQUENCER_UPTIME_FEED = IChainlinkOracle(_aggregator);
     GRACE_PERIOD = _gracePeriod;

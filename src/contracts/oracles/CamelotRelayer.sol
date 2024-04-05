@@ -22,7 +22,7 @@ contract CamelotRelayer {
 
   constructor(address _algebraV3Factory, address _baseToken, address _quoteToken, uint32 _quotePeriod) {
     algebraPool = IAlgebraFactory(_algebraV3Factory).poolByPair(_baseToken, _quoteToken);
-    require(algebraPool != address(0), 'AlgebraRelayer_InvalidPool');
+    require(algebraPool != address(0));
 
     address _token0 = IAlgebraPool(algebraPool).token0();
     address _token1 = IAlgebraPool(algebraPool).token1();

@@ -23,8 +23,8 @@ contract ChainlinkRelayer {
    * @param  _staleThreshold The threshold after which the price is considered stale
    */
   constructor(address _aggregator, uint256 _staleThreshold) {
-    require(_aggregator != address(0), 'NullAggregator');
-    require(_staleThreshold != 0, 'NullStaleThreshold');
+    require(_aggregator != address(0)); // error msg will not show from constructor revert
+    require(_staleThreshold != 0);
 
     STALE_THRESHOLD = _staleThreshold;
     chainlinkFeed = IChainlinkOracle(_aggregator);
