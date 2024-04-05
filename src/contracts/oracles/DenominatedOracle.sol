@@ -27,8 +27,8 @@ contract DenominatedOracle {
    * @param  _inverted Flag that indicates whether the price source quote should be INVERTED or not
    */
   constructor(IBaseOracle _priceSource, IBaseOracle _denominationPriceSource, bool _inverted) {
-    require(address(_priceSource) != address(0), 'Denom_NullPriceSource');
-    require(address(_denominationPriceSource) != address(0), 'Denom_NullPriceSource');
+    require(address(_priceSource) != address(0));
+    require(address(_denominationPriceSource) != address(0));
 
     priceSource = _priceSource;
     denominationPriceSource = _denominationPriceSource;
