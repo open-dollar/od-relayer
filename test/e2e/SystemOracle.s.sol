@@ -199,16 +199,16 @@ contract OracleSetup is DSTestPlus {
   function test_ChainlinkRelayerL2Verified_RevertAfterInit() public {
     vm.expectRevert('SequencerDown');
     ethUsdPriceSourceL2VerifiedMock.read(); // sequencer up, grace period deny
-    vm.expectRevert('SequencerDown');
-    ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    (uint256 _result, bool _validity) = ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    assertFalse(_validity);
   }
 
   function test_ChainlinkRelayerL2Verified_RevertGracePeriod() public {
     vm.warp(startTime + GRACE_PERIOD - 1);
     vm.expectRevert('SequencerDown'); // sequencer up, grace period deny
     ethUsdPriceSourceL2VerifiedMock.read();
-    vm.expectRevert('SequencerDown');
-    ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    (uint256 _result, bool _validity) = ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    assertFalse(_validity);
   }
 
   function test_ChainlinkRelayerL2Verified_RevertNetworkDown() public {
@@ -216,8 +216,8 @@ contract OracleSetup is DSTestPlus {
     mockSeqFeed.switchSequencer();
     vm.expectRevert('SequencerDown'); // sequencer down, grace period accept
     ethUsdPriceSourceL2VerifiedMock.read();
-    vm.expectRevert('SequencerDown');
-    ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    (uint256 _result, bool _validity) = ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    assertFalse(_validity);
   }
 
   function test_ChainlinkRelayerL2Verified_RevertAll() public {
@@ -225,8 +225,8 @@ contract OracleSetup is DSTestPlus {
     mockSeqFeed.switchSequencer();
     vm.expectRevert('SequencerDown'); // sequencer down, grace period deny
     ethUsdPriceSourceL2VerifiedMock.read();
-    vm.expectRevert('SequencerDown');
-    ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    (uint256 _result, bool _validity) = ethUsdPriceSourceL2VerifiedMock.getResultWithValidity();
+    assertFalse(_validity);
   }
 
   function test_ChainlinkRelayerSymbolL2Verified() public {
