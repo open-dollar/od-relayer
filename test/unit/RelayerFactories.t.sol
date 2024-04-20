@@ -248,6 +248,18 @@ contract Unit_RelayerFactory_DeployChainlinkRelayer is Base {
     assertEq(chainlinkRelayerFactory.relayerById(1), address(chainlinkRelayerChild));
   }
 
+  function test_Set_Relayers_WithL2Validity(
+    string memory _symbol,
+    uint8 _decimals,
+    uint256 _staleThreshold
+  ) public happyPath(_symbol, _decimals, _staleThreshold) {
+    chainlinkRelayerChild = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
+      mockAggregator, mockAggregator, _staleThreshold, _staleThreshold
+    );
+
+    assertEq(chainlinkRelayerFactory.relayerWithL2ValidityById(1), address(chainlinkRelayerChild));
+  }
+
   function test_Emit_NewRelayer(
     string memory _symbol,
     uint8 _decimals,

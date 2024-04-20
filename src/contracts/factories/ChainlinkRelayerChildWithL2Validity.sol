@@ -8,8 +8,8 @@ contract ChainlinkRelayerChildWithL2Validity is ChainlinkRelayerWithL2Validity, 
   // --- Init ---
 
   /**
-   * @param  _aggregator The address of the aggregator to relay
-   * @param  _aggregator The address of the aggregator to relay
+   * @param  _priceAggregator The address of the price aggregator to relay
+   * @param  _sequencerAggregator The address of the sequencer aggregator to relay
    * @param  _staleThreshold The threshold in seconds to consider the aggregator stale
    * @param  _gracePeriod The period in seconds to consider the sequencer valid after outage
    */
