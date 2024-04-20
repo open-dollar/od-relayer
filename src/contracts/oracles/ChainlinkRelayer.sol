@@ -57,6 +57,8 @@ contract ChainlinkRelayer {
 
   /// @notice Parses the result from the aggregator into 18 decimals format
   function _parseResult(int256 _chainlinkResult) internal view returns (uint256 _result) {
+    require(_chainlinkResult >= 0, 'Negative price value not allowed');
+
     if (MULTIPLIER == 0) {
       return uint256(_chainlinkResult);
     } else if (MULTIPLIER > 0) {
