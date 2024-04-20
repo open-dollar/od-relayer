@@ -25,7 +25,10 @@ contract DataConsumerSequencerCheck {
   function getSequencerFeedValidation() public view returns (bool) {
     (uint256 _roundId, int256 _answer, uint256 _startedAt, uint256 _updatedAt, uint256 _answeredInRound) =
       SEQUENCER_UPTIME_FEED.latestRoundData();
+    if (_answeredInRound < _roundId) return false;
+    // If the answer is 1, the sequencer is down
     if (_answer != 0) return false;
+    if (_updatedAt == 0) return false;
 
     uint256 timeSinceOnline = block.timestamp - _startedAt;
     if (timeSinceOnline < GRACE_PERIOD) return false;
