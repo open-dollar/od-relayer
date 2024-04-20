@@ -13,8 +13,10 @@ contract ChainlinkRelayerWithL2Validity is ChainlinkRelayer, DataConsumerSequenc
   ) ChainlinkRelayer(_priceAggregator, _staleThreshold) DataConsumerSequencerCheck(_sequencerAggregator, _gracePeriod) {}
 
   function getResultWithValidity() public view override returns (uint256 _result, bool _validity) {
-    require(getSequencerFeedValidation(), 'SequencerDown');
     (_result, _validity) = super.getResultWithValidity();
+    if (_validity) {
+      _validity = getSequencerFeedValidation();
+    }
   }
 
   function read() public view override returns (uint256 _result) {
