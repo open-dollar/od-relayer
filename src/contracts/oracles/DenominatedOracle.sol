@@ -48,10 +48,11 @@ contract DenominatedOracle {
 
     if (INVERTED) {
       if (_priceSourceValue == 0) return (0, false);
-      _priceSourceValue = WAD.wdiv(_priceSourceValue);
+      _result = WAD.wmul(_denominationPriceSourceValue).wdiv(_priceSourceValue);
+    } else {
+      _result = _priceSourceValue.wmul(_denominationPriceSourceValue);
     }
 
-    _result = _priceSourceValue.wmul(_denominationPriceSourceValue);
     _validity = _priceSourceValidity && _denominationPriceSourceValidity;
   }
 

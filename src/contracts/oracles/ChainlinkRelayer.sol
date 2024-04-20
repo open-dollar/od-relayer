@@ -49,7 +49,7 @@ contract ChainlinkRelayer {
     (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
 
     // Revert if price is invalid
-    require(_aggregatorResult != 0 || _isValidFeed(_aggregatorTimestamp), 'InvalidPriceFeed');
+    require(_aggregatorResult != 0 && _isValidFeed(_aggregatorTimestamp), 'InvalidPriceFeed');
 
     // Parse the quote into 18 decimals format
     _result = _parseResult(_aggregatorResult);
@@ -57,6 +57,8 @@ contract ChainlinkRelayer {
 
   /// @notice Parses the result from the aggregator into 18 decimals format
   function _parseResult(int256 _chainlinkResult) internal view returns (uint256 _result) {
+    require(_chainlinkResult >= 0, 'Negative price value not allowed');
+
     if (MULTIPLIER == 0) {
       return uint256(_chainlinkResult);
     } else if (MULTIPLIER > 0) {

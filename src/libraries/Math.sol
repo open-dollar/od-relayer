@@ -9,6 +9,9 @@ library Math {
   }
 
   function wmul(uint256 _x, uint256 _y) internal pure returns (uint256 _wmul) {
-    return (_x * _y) / WAD;
+    uint256 result = (_x * _y);
+    require(result / _x == _y, 'wmul overflow error detected');
+
+    return result / WAD;
   }
 }
