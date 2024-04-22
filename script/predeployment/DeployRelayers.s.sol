@@ -106,3 +106,19 @@ contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
     vm.stopBroadcast();
   }
 }
+
+// BROADCAST
+// source .env && forge script DeployArbUsdChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployArbUsdChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployArbUsdChainlinkRelayerMainnet is CommonMainnet {
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_ARB_USD_FEED, MAINNET_ORACLE_INTERVAL);
+    vm.stopBroadcast();
+  }
+}
