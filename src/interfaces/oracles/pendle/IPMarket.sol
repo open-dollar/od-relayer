@@ -6,7 +6,7 @@ import {IPPrincipalToken} from '@interfaces/oracles/pendle/IPPrincipalToken.sol'
 import {IPYieldToken} from '@interfaces/oracles/pendle/IPYieldToken.sol';
 import {IERC20Metadata} from '@interfaces/utils/IERC20Metadata.sol';
 
-interface IPMarket is IERC20Metadta {
+interface IPMarket is IERC20Metadata {
   /**
    * required functions:
    *  getPtToSYRate
