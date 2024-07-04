@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.24;
+pragma solidity 0.7.6;
 
-import '@pendle/contracts/oracles/PendlePYLpOracle.sol';
-import '@pendle/contracts/interfaces/IPAllActionV3.sol';
-import '@pendle/contracts/interfaces/IPMarket.sol';
+import '@interfaces/oracles/pendle/IPOracle.sol';
+import '@interfaces/oracles/pendle/IPMarket.sol';
 import '@interfaces/oracles/IBaseOracle.sol';
 
 /**
@@ -11,29 +10,27 @@ import '@interfaces/oracles/IBaseOracle.sol';
  * @notice This contracts transforms a Pendle TWAP price feed into a standard IBaseOracle feed
  *
  */
-contract PendleRelayer is IBaseOracle {
-  using PendlePYOracleLib for IPMarket;
-  using PendleLpOracleLib for IPMarket;
-
+contract PendlePTtoSYRelayer is IBaseOracle {
   IStandardizedYield public SY;
   IPPrincipalToken public PT;
   IPYieldToken public YT;
 
   IPMarket public market;
-  PendlePYLpOracle public oracle;
+  IPendlePYLpOracle public oracle;
 
   uint32 public twapDuration;
+  string public symbol;
 
   constructor(address _market, address _oracle, uint32 _twapDuration) {
     require(_market != address(0) && _oracle != address(0), 'Invalid address');
     require(twapDuration != 0, 'Invalid TWAP duration');
 
     market = IPMarket(_market);
-    oracle = PendlePYLpOracle(_oracle);
+    oracle = IPendlePYLpOracle(_oracle);
     twapDuration = _twapDuration;
 
     (SY, PT, YT) = market.readTokens();
-
+    symbol = string(abi.encodePacked(market.symbol()));
     // test if oracle is ready
     (bool increaseCardinalityRequired,, bool oldestObservationSatisfied) = oracle.getOracleState(_market, _twapDuration);
     // It's required to call IPMarket(market).increaseObservationsCardinalityNext(cardinalityRequired) and wait
@@ -43,8 +40,12 @@ contract PendleRelayer is IBaseOracle {
     require(!increaseCardinalityRequired && oldestObservationSatisfied, 'Oracle not ready');
   }
 
-  function getResultWithValidity() external view returns (uint256 _resullt, bool _validity) {}
+  function getResultWithValidity() external view returns (uint256 _resullt, bool _validity) {
+    _result = oracle.getPtToSyRate(address(market), twapDuration);
+    _validity = true;
+  }
 
-  function read() external view returns (uint256 _value) {}
-  function symbol() external view returns (string memory _symbol) {}
+  function read() external view returns (uint256 _value) {
+    _value = oracle.getPtToSyRate(address(market), twapDuration);
+  }
 }

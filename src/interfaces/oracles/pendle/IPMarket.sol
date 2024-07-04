@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.0;
+pragma solidity ^0.7.6;
 
 import {IStandardizedYield} from '@interfaces/oracles/pendle/IStandardizedYield.sol';
 import {IPPrincipalToken} from '@interfaces/oracles/pendle/IPPrincipalToken.sol';
 import {IPYieldToken} from '@interfaces/oracles/pendle/IPYieldToken.sol';
+import {IERC20Metadata} from '@interfaces/utils/IERC20Metadata.sol';
 
-interface IPMarket {
+interface IPMarket is IERC20Metadta {
   /**
    * required functions:
    *  getPtToSYRate
