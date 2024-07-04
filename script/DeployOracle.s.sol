@@ -20,7 +20,7 @@ contract DeployEthUsdRelayerMainnet is Script, CommonMainnet {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
 
     chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
-      MAINNET_CHAINLINK_ETH_USD_FEED, MAINNET_ORACLE_INTERVAL
+      MAINNET_CHAINLINK_ETH_USD_FEED, MAINNET_CHAINLINK_SEQUENCER_FEED, MAINNET_ORACLE_INTERVAL, MAINNET_GRACE_PERIOD
     );
 
     vm.stopBroadcast();
@@ -36,21 +36,23 @@ contract DeployEthUsdRelayerMainnet is Script, CommonMainnet {
 contract DeployLinkGrtEthOracles is Script, CommonMainnet {
   IBaseOracle public _linkUSDRelayer;
   IBaseOracle public _grtUSDRelayer;
+  IBaseOracle public _ethDelayedOracle;
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
 
     _linkUSDRelayer = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
-      MAINNET_CHAINLINK_LINK_USD_FEED, MAINNET_ORACLE_INTERVAL
+      MAINNET_CHAINLINK_LINK_USD_FEED, MAINNET_CHAINLINK_SEQUENCER_FEED, MAINNET_ORACLE_INTERVAL, MAINNET_GRACE_PERIOD
     );
     _grtUSDRelayer = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
-      MAINNET_CHAINLINK_LINK_USD_FEED, MAINNET_ORACLE_INTERVAL
+      MAINNET_CHAINLINK_LINK_USD_FEED, MAINNET_CHAINLINK_SEQUENCER_FEED, MAINNET_ORACLE_INTERVAL, MAINNET_GRACE_PERIOD
     );
 
-    _linkDelayedOracle = delayedOracleFactory.deployDelayedOracle(address(_linkUSDRelayer), MAINNET_ORACLE_INTERVAL);
-    _grtDelayedOracle = delayedOracleFactory.deployDelayedOracle(address(_grtUSDRelayer), MAINNET_ORACLE_INTERVAL);
-    _ethDelayedOracle =
-      delayedOracleFactory.deployDelayedOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER, MAINNET_ORACLE_INTERVAL);
+    delayedOracleFactory.deployDelayedOracle(_linkUSDRelayer, MAINNET_ORACLE_INTERVAL);
+    delayedOracleFactory.deployDelayedOracle(_grtUSDRelayer, MAINNET_ORACLE_INTERVAL);
+    delayedOracleFactory.deployDelayedOracle(
+      IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), MAINNET_ORACLE_INTERVAL
+    );
 
     vm.stopBroadcast();
   }

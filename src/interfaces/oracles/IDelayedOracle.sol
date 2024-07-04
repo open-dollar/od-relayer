@@ -13,17 +13,6 @@ interface IDelayedOracle is IBaseOracle {
    */
   event UpdateResult(uint256 _newMedian, uint256 _lastUpdateTime);
 
-  // --- Errors ---
-
-  /// @notice Throws if the provided price source address is null
-  error DelayedOracle_NullPriceSource();
-  /// @notice Throws if the provided delay is null
-  error DelayedOracle_NullDelay();
-  /// @notice Throws when trying to update the oracle before the delay has elapsed
-  error DelayedOracle_DelayHasNotElapsed();
-  /// @notice Throws when trying to read the current value and it is invalid
-  error DelayedOracle_NoCurrentValue();
-
   // --- Structs ---
 
   struct Feed {
