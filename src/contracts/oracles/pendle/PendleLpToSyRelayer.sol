@@ -9,7 +9,7 @@ import '@interfaces/oracles/pendle/IPMarket.sol';
  * @notice This contracts transforms a Pendle TWAP price feed into a standard IBaseOracle feed
  *
  */
-contract PendleYTtoSYRelayer {
+contract PendleLpToSyRelayer {
   IStandardizedYield public SY;
   IPPrincipalToken public PT;
   IPYieldToken public YT;
@@ -40,11 +40,11 @@ contract PendleYTtoSYRelayer {
   }
 
   function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
-    _result = oracle.getYtToSyRate(address(market), twapDuration);
+    _result = oracle.getLpToSyRate(address(market), twapDuration);
     _validity = true;
   }
 
   function read() external view returns (uint256 _value) {
-    _value = oracle.getYtToSyRate(address(market), twapDuration);
+    _value = oracle.getLpToSyRate(address(market), twapDuration);
   }
 }
