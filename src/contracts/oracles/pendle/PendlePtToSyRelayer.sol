@@ -3,12 +3,13 @@ pragma solidity 0.7.6;
 
 import '@interfaces/oracles/pendle/IPOracle.sol';
 import '@interfaces/oracles/pendle/IPMarket.sol';
-
+import 'forge-std/console2.sol';
 /**
  * @title  PendleRelayer
  * @notice This contracts transforms a Pendle TWAP price feed into a standard IBaseOracle feed
  *
  */
+
 contract PendlePtToSyRelayer {
   IStandardizedYield public SY;
   IPPrincipalToken public PT;
@@ -22,14 +23,15 @@ contract PendlePtToSyRelayer {
 
   constructor(address _market, address _oracle, uint32 _twapDuration) {
     require(_market != address(0) && _oracle != address(0), 'Invalid address');
-    require(twapDuration != 0, 'Invalid TWAP duration');
+    require(_twapDuration != uint32(0), 'Invalid TWAP duration');
 
     market = IPMarket(_market);
     oracle = IPOracle(_oracle);
     twapDuration = _twapDuration;
 
     (SY, PT, YT) = market.readTokens();
-    symbol = string(abi.encodePacked(market.symbol()));
+    symbol = string(abi.encodePacked(PT.symbol(), ' => ', SY.symbol()));
+
     // test if oracle is ready
     (bool increaseCardinalityRequired,, bool oldestObservationSatisfied) = oracle.getOracleState(_market, _twapDuration);
     // It's required to call IPMarket(market).increaseObservationsCardinalityNext(cardinalityRequired) and wait

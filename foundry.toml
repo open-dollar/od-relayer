@@ -9,6 +9,7 @@ number_underscore = 'thousands'
 wrap_comments = false
 
 [profile.default]
+evm_version = "cancun"
 auto_detect_solc = true
 src = "src"
 out = "out"

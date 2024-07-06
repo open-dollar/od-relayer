@@ -6,6 +6,7 @@ import {PendlePtToSyRelayerChild} from '@contracts/factories/pendle/PendlePtToSy
 import {PendleYtToSyRelayerChild} from '@contracts/factories/pendle/PendleYtToSyRelayerChild.sol';
 import {PendleLpToSyRelayerChild} from '@contracts/factories/pendle/PendleLpToSyRelayerChild.sol';
 import {Authorizable} from '@contracts/utils/Authorizable.sol';
+import 'forge-std/console2.sol';
 
 contract PendleRelayerFactory is Authorizable {
   uint256 public relayerId;
