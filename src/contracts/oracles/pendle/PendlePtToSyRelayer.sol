@@ -30,7 +30,7 @@ contract PendlePtToSyRelayer {
     twapDuration = _twapDuration;
 
     (SY, PT, YT) = market.readTokens();
-    symbol = string(abi.encodePacked(PT.symbol(), ' => ', SY.symbol()));
+    symbol = string(abi.encodePacked(PT.symbol(), ' / ', SY.symbol()));
 
     // test if oracle is ready
     (bool increaseCardinalityRequired,, bool oldestObservationSatisfied) = oracle.getOracleState(_market, _twapDuration);
