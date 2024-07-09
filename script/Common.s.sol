@@ -11,6 +11,7 @@ import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {PendleRelayerFactory} from '@contracts/factories/pendle/PendleRelayerFactory.sol';
+import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 
 abstract contract CommonMainnet is Script {
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
@@ -18,6 +19,7 @@ abstract contract CommonMainnet is Script {
   DenominatedOracleFactory public denominatedOracleFactory =
     DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
   PendleRelayerFactory public pendleRelayerFactory = PendleRelayerFactory(MAINNET_PENDLE_RELAYER_FACTORY);
+  IDelayedOracleFactory public delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
 }
 
 abstract contract CommonSepolia is Script {

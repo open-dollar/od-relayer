@@ -19,7 +19,7 @@ contract DeployODGCamelotRelayerMainnet is CommonMainnet {
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
     camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_ORACLE_INTERVAL)
+      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_ORACLE_DELAY)
     );
     vm.stopBroadcast();
   }
@@ -56,7 +56,7 @@ contract DeployEthUsdChainlinkRelayerMainnet is CommonMainnet {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_ETH_USD_FEED, MAINNET_ORACLE_INTERVAL);
+    chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_ETH_USD_FEED, MAINNET_ORACLE_DELAY);
     vm.stopBroadcast();
   }
 }
@@ -73,7 +73,7 @@ contract DeployRethEthChainlinkRelayerMainnet is CommonMainnet {
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
     IBaseOracle _chainlinkRethEthPriceFeed =
-      chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_RETH_ETH_FEED, MAINNET_ORACLE_INTERVAL);
+      chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_RETH_ETH_FEED, MAINNET_ORACLE_DELAY);
 
     IBaseOracle _rethUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
       _chainlinkRethEthPriceFeed, IBaseOracle(MAINNET_CHAINLINK_ETH_USD_RELAYER), false
@@ -96,7 +96,7 @@ contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
     IBaseOracle _chainlinkWstethEthPriceFeed =
-      chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_WSTETH_ETH_FEED, MAINNET_ORACLE_INTERVAL);
+      chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_WSTETH_ETH_FEED, MAINNET_ORACLE_DELAY);
 
     IBaseOracle _wstethUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
       _chainlinkWstethEthPriceFeed, IBaseOracle(MAINNET_CHAINLINK_ETH_USD_RELAYER), false
