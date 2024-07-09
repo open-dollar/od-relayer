@@ -400,7 +400,7 @@ contract Unit_PendleRelayerFactory_DeployPendleOracles is Base {
     assertEq(pendleFactory.authorizedAccounts()[0], address(this));
   }
 
-  function test_Deploy_PT_Oracle() public {
+  function test_Deploy_PT_Relayer() public {
     IBaseOracle ptOracle =
       pendleFactory.deployPendlePtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
     assertTrue(keccak256(abi.encode(ptOracle.symbol())) != keccak256(abi.encode('')));
@@ -412,7 +412,7 @@ contract Unit_PendleRelayerFactory_DeployPendleOracles is Base {
     assertEq(address(IPendleRelayer(address(ptOracle)).SY()), 0xc0Cf4b266bE5B3229C49590B59E67A09c15b22f4);
   }
 
-  function test_Deploy_YT_Oracle() public {
+  function test_Deploy_YT_Relayer() public {
     IBaseOracle ytOracle =
       pendleFactory.deployPendleYtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
     assertTrue(keccak256(abi.encode(ytOracle.symbol())) != keccak256(abi.encode('')));
@@ -424,7 +424,7 @@ contract Unit_PendleRelayerFactory_DeployPendleOracles is Base {
     assertEq(address(IPendleRelayer(address(ytOracle)).SY()), 0xc0Cf4b266bE5B3229C49590B59E67A09c15b22f4);
   }
 
-  function test_Deploy_LP_Oracle() public {
+  function test_Deploy_LP_Relayer() public {
     IBaseOracle lpOracle =
       pendleFactory.deployPendleLpRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
     assertTrue(keccak256(abi.encode(lpOracle.symbol())) != keccak256(abi.encode('')));

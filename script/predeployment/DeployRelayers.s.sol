@@ -106,3 +106,47 @@ contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
     vm.stopBroadcast();
   }
 }
+
+// BROADCAST
+// source .env && forge script DeployRethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployRethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    IBaseOracle _pendleRethPtToSyFeed = pendleRelayerFactory.deployPendlePtRelayer(
+      MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
+    );
+
+    IBaseOracle _rethToEthOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_RETH_USD_ORACLE), false
+    );
+
+    _pendleRethPtToSyFeed.symbol(); // "(WSTETH / ETH) * (ETH / USD)"
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployWsethPtToSyPendleRelayerMainnet is CommonMainnet {
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    IBaseOracle _pendleWsethPtToSyFeed = pendleRelayerFactory.deployPendlePtRelayer(
+      MAINNET_PENDLE_WSTETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
+    );
+
+    IBaseOracle _rethToEthOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_WSTETH_USD_ORACLE), false
+    );
+
+    _pendleRethPtToSyFeed.symbol(); // "(WSTETH / ETH) * (ETH / USD)"
+    vm.stopBroadcast();
+  }
+}
