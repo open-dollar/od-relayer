@@ -108,14 +108,12 @@ contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
 }
 
 // BROADCAST
-// source .env && forge script DeployRethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
-
+// source .env && forge script DeployRethPtToSyPendleRelayerMainnet rtEthOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
 // SIMULATE
-// source .env && forge script DeployRethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
-
+// source .env && forge script DeployRethPtToSyPendleRelayerMainnet rtEthOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC
 contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    vm.startBroadcast();
     IBaseOracle _pendleRethPtToSyFeed = pendleRelayerFactory.deployPendlePtRelayer(
       MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
     );
@@ -130,19 +128,19 @@ contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
 }
 
 // BROADCAST
-// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
 
 // SIMULATE
-// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+// source .env && forge script DeployWsethPtToSyPendleRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC
 
-contract DeployWsethPtToSyPendleRelayerMainnet is CommonMainnet {
+contract DeployWstethPtToSyPendleRelayerMainnet is CommonMainnet {
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    IBaseOracle _pendleWsethPtToSyFeed = pendleRelayerFactory.deployPendlePtRelayer(
+    vm.startBroadcast();
+    IBaseOracle _pendleWstethPtToSyFeed = pendleRelayerFactory.deployPendlePtRelayer(
       MAINNET_PENDLE_WSTETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
     );
 
-    IBaseOracle _wsethToUSDOracle = denominatedOracleFactory.deployDenominatedOracle(
+    IBaseOracle _wstethToUSDOracle = denominatedOracleFactory.deployDenominatedOracle(
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_WSTETH_USD_ORACLE), false
     );
 
