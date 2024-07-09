@@ -120,11 +120,11 @@ contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
       MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
     );
 
-    IBaseOracle _rethToEthOracle = denominatedOracleFactory.deployDenominatedOracle(
+    IBaseOracle _rethToUSDOracle = denominatedOracleFactory.deployDenominatedOracle(
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_RETH_USD_ORACLE), false
     );
 
-    _pendleRethPtToSyFeed.symbol(); // "(WSTETH / ETH) * (ETH / USD)"
+    _pendleRethPtToSyFeed.symbol();
     vm.stopBroadcast();
   }
 }
@@ -142,11 +142,11 @@ contract DeployWsethPtToSyPendleRelayerMainnet is CommonMainnet {
       MAINNET_PENDLE_WSTETH_MARKET, MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_TWAP_DURATION
     );
 
-    IBaseOracle _rethToEthOracle = denominatedOracleFactory.deployDenominatedOracle(
+    IBaseOracle _wsethToUSDOracle = denominatedOracleFactory.deployDenominatedOracle(
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_WSTETH_USD_ORACLE), false
     );
 
-    _pendleRethPtToSyFeed.symbol(); // "(WSTETH / ETH) * (ETH / USD)"
+    _pendleRethPtToSyFeed.symbol();
     vm.stopBroadcast();
   }
 }
