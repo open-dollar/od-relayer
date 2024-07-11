@@ -106,3 +106,22 @@ contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
     vm.stopBroadcast();
   }
 }
+
+// BROADCAST
+// source .env && forge script DeployEzEthUSDPriceFeed rtEthOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+// SIMULATE
+// source .env && forge script DeployEzEthUSDPriceFeed rtEthOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC
+contract DeployEzEthUSDPriceFeed is CommonMainnet {
+  function run() public {
+    vm.startBroadcast();
+    IBaseOracle _ezEthEthPriceFeed =
+      chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_EZETH_ETH_FEED, MAINNET_ORACLE_DELAY);
+
+    IBaseOracle _ezEthUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _ezEthEthPriceFeed, IBaseOracle(MAINNET_CHAINLINK_ETH_USD_RELAYER), false
+    );
+
+    _ezEthUsdOracle.symbol(); // "(EZETH / ETH) * (ETH / USD)"
+    vm.stopBroadcast();
+  }
+}
