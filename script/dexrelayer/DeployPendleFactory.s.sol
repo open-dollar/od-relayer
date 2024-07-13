@@ -24,7 +24,6 @@ contract DeployPendleFactory is Script {
     uint256 pk = vm.envUint('ARB_SEPOLIA_PK');
     vm.startBroadcast(pk);
     pendleRelayerFactory = new PendleRelayerFactory();
-    IAuthorizable(address(pendleRelayerFactory)).addAuthorization(vm.addr(pk));
     vm.stopBroadcast();
   }
 }
