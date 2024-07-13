@@ -85,7 +85,7 @@ contract DeployRethEthChainlinkRelayerMainnet is CommonMainnet {
 }
 
 // BROADCAST
-// source .env && forge script DeployWstethEthChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+// source .env && forge script DeployWstethEthChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
 
 // SIMULATE
 // source .env && forge script DeployWstethEthChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
