@@ -10,12 +10,14 @@ import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
+import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 
 abstract contract CommonMainnet is Script {
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
   CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_RELAYER_FACTORY);
   DenominatedOracleFactory public denominatedOracleFactory =
     DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
+  IDelayedOracleFactory public delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
 }
 
 abstract contract CommonSepolia is Script {
