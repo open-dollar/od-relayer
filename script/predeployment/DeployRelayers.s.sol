@@ -123,8 +123,8 @@ contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_RETH_USD_ORACLE), false
     );
 
-    IBaseOracle __rethToUSDOracleDelayedOracle = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY)
-      .deployDelayedOracle(_wstethyToUSDOracle, MAINNET_ORACLE_DELAY);
+    IBaseOracle __rethToUSDOracleDelayedOracle =
+      delayedOracleFactory.deployDelayedOracle(_wstethyToUSDOracle, MAINNET_ORACLE_DELAY);
 
     __rethToUSDOracleDelayedOracle.symbol();
     vm.stopBroadcast();
@@ -148,9 +148,8 @@ contract DeployWstethPtToSyPendleRelayerMainnet is CommonMainnet {
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_WSTETH_USD_ORACLE), false
     );
 
-    IBaseOracle _wstethToUSDDelayedOracle = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY).deployDelayedOracle(
-      _wstethyToUSDOracle, MAINNET_ORACLE_DELAY
-    );
+    IBaseOracle _wstethToUSDDelayedOracle =
+      delayedOracleFactory.deployDelayedOracle(_wstethToUSDOracle, MAINNET_ORACLE_DELAY);
 
     _wstethToUSDDelayedOracle.symbol();
     vm.stopBroadcast();
