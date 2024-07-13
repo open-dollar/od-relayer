@@ -5,6 +5,7 @@ import '@script/Registry.s.sol';
 import {CommonMainnet} from '@script/Common.s.sol';
 import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
+import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
 // BROADCAST
@@ -122,7 +123,10 @@ contract DeployRethPtToSyPendleRelayerMainnet is CommonMainnet {
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_RETH_USD_ORACLE), false
     );
 
-    _pendleRethPtToSyFeed.symbol();
+    IBaseOracle __rethToUSDOracleDelayedOracle = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY)
+      .deployDelayedOracle(_wstethyToUSDOracle, MAINNET_ORACLE_DELAY);
+
+    __rethToUSDOracleDelayedOracle.symbol();
     vm.stopBroadcast();
   }
 }
@@ -144,7 +148,11 @@ contract DeployWstethPtToSyPendleRelayerMainnet is CommonMainnet {
       _pendleRethPtToSyFeed, IBaseOracle(MAINNET_DENOMINATED_WSTETH_USD_ORACLE), false
     );
 
-    _pendleRethPtToSyFeed.symbol();
+    IBaseOracle _wstethToUSDDelayedOracle = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY).deployDelayedOracle(
+      _wstethyToUSDOracle, MAINNET_ORACLE_DELAY
+    );
+
+    _wstethToUSDDelayedOracle.symbol();
     vm.stopBroadcast();
   }
 }
