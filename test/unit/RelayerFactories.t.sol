@@ -14,7 +14,9 @@ import {ChainlinkRelayerChild} from '@contracts/factories/ChainlinkRelayerChild.
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {DenominatedOracleChild} from '@contracts/factories/DenominatedOracleChild.sol';
+import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
+import 'forge-std/console2.sol';
 
 abstract contract Base is DSTestPlus {
   address deployer = label('deployer');
@@ -34,6 +36,9 @@ abstract contract Base is DSTestPlus {
 
   DenominatedOracleFactory denominatedOracleFactory;
   IBaseOracle denominatedOracleChild;
+
+  IDelayedOracleFactory delayedOracleFactory;
+  IBaseOracle delayedOracleChild;
 
   address mockAggregator = mockContract('ChainlinkAggregator');
 
@@ -379,5 +384,40 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
       address(denominatedOracleFactory.deployDenominatedOracle(camelotRelayerChild, chainlinkRelayerChild, false)),
       address(denominatedOracle)
     );
+  }
+}
+
+contract Unit_Renzo_Deploy_EzETH_Oracle is Base {
+  address mainnetAuthorizedAccount = 0xF78dA2A37049627636546E0cFAaB2aD664950917;
+
+  function setUp() public virtual override {
+    super.setUp();
+    vm.createSelectFork(vm.envString('ARB_MAINNET_RPC'));
+    delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
+    chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
+    denominatedOracleFactory = DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
+    label(address(delayedOracleFactory), 'DelayedOracleFactory');
+    label(address(chainlinkRelayerFactory), 'ChainlinkRelayerFactory');
+    label(address(denominatedOracleFactory), 'DenominatedOracleFactory');
+  }
+
+  function test_DeployEzEthRelayer() public {
+    vm.startPrank(mainnetAuthorizedAccount);
+    IBaseOracle _ezEthEthPriceFeed = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
+      MAINNET_CHAINLINK_EZETH_ETH_FEED,
+      MAINNET_CHAINLINK_SEQUENCER_FEED,
+      MAINNET_ORACLE_DELAY,
+      MAINNET_CHAINLINK_L2VALIDITY_GRACE_PERIOD
+    );
+
+    IBaseOracle _ezEthUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _ezEthEthPriceFeed, IBaseOracle(MAINNET_CHAINLINK_ETH_USD_RELAYER), false
+    );
+
+    IBaseOracle _ezEthUsdDelayedOracle = delayedOracleFactory.deployDelayedOracle(_ezEthUsdOracle, MAINNET_ORACLE_DELAY);
+
+    string memory _ezEthSymbol = _ezEthUsdDelayedOracle.symbol(); // "(EZETH / ETH) * (ETH / USD)"
+    vm.stopPrank();
+    assertEq(_ezEthSymbol, '(ezETH / ETH) * (ETH / USD)');
   }
 }
