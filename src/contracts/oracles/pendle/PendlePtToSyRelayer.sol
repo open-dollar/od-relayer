@@ -13,7 +13,6 @@ import 'forge-std/console2.sol';
 contract PendlePtToSyRelayer {
   IStandardizedYield public SY;
   IPPrincipalToken public PT;
-  IPYieldToken public YT;
 
   IPMarket public market;
   IPOracle public oracle;
@@ -29,7 +28,8 @@ contract PendlePtToSyRelayer {
     oracle = IPOracle(_oracle);
     twapDuration = _twapDuration;
 
-    (SY, PT, YT) = market.readTokens();
+    (SY, PT,) = market.readTokens();
+
     symbol = string(abi.encodePacked(PT.symbol(), ' / ', SY.symbol()));
 
     // test if oracle is ready

@@ -11,8 +11,6 @@ import '@interfaces/oracles/pendle/IPMarket.sol';
  */
 contract PendleLpToSyRelayer {
   IStandardizedYield public SY;
-  IPPrincipalToken public PT;
-  IPYieldToken public YT;
 
   IPMarket public market;
   IPOracle public oracle;
@@ -28,7 +26,8 @@ contract PendleLpToSyRelayer {
     oracle = IPOracle(_oracle);
     twapDuration = _twapDuration;
 
-    (SY, PT, YT) = market.readTokens();
+    (SY,,) = market.readTokens();
+
     symbol = string(abi.encodePacked('LP / ', SY.symbol()));
     // test if oracle is ready
     (bool increaseCardinalityRequired,, bool oldestObservationSatisfied) = oracle.getOracleState(_market, _twapDuration);
