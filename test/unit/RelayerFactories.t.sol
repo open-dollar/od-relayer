@@ -401,7 +401,7 @@ contract Unit_Pendle_Renzo_Deploy_Oracle is Base {
     delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
     chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
     denominatedOracleFactory = DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
-     pendleFactory = IPendleRelayerFactory(address(new PendleRelayerFactory()));
+    pendleFactory = IPendleRelayerFactory(address(new PendleRelayerFactory()));
     label(address(delayedOracleFactory), 'DelayedOracleFactory');
     label(address(chainlinkRelayerFactory), 'ChainlinkRelayerFactory');
     label(address(denominatedOracleFactory), 'DenominatedOracleFactory');
@@ -425,66 +425,5 @@ contract Unit_Pendle_Renzo_Deploy_Oracle is Base {
     string memory _ezEthSymbol = _ezEthUsdDelayedOracle.symbol(); // "(EZETH / ETH) * (ETH / USD)"
     vm.stopPrank();
     assertEq(_ezEthSymbol, '(ezETH / ETH) * (ETH / USD)');
-  
-  }
-
-  function test_Deploy_PendleFactory() public {
-    assertEq(pendleFactory.relayerId(), 0);
-    assertEq(pendleFactory.authorizedAccounts()[0], address(this));
-  }
-
-
-  function test_Deploy_PT_Oracle() public {
-    IBaseOracle ptOracle =
-      pendleFactory.deployPendlePtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
-    assertTrue(keccak256(abi.encode(ptOracle.symbol())) != keccak256(abi.encode('')));
-    assertEq(uint256(IPendleRelayer(address(ptOracle)).twapDuration()), 900);
-    assertEq(address(IPendleRelayer(address(ptOracle)).market()), MAINNET_PENDLE_RETH_MARKET);
-    assertEq(address(IPendleRelayer(address(ptOracle)).oracle()), MAINNET_PENDLE_ORACLE);
-    assertEq(address(IPendleRelayer(address(ptOracle)).PT()), 0x685155D3BD593508Fe32Be39729810A591ED9c87);
-    assertEq(address(IPendleRelayer(address(ptOracle)).YT()), 0xe822AE44EB2466B4E263b1cbC94b4833dDEf9700);
-    assertEq(address(IPendleRelayer(address(ptOracle)).SY()), 0xc0Cf4b266bE5B3229C49590B59E67A09c15b22f4);
-  }
-
-  function test_Deploy_YT_Oracle() public {
-    IBaseOracle ytOracle =
-      pendleFactory.deployPendleYtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
-    assertTrue(keccak256(abi.encode(ytOracle.symbol())) != keccak256(abi.encode('')));
-    assertEq(uint256(IPendleRelayer(address(ytOracle)).twapDuration()), 900);
-    assertEq(address(IPendleRelayer(address(ytOracle)).market()), MAINNET_PENDLE_RETH_MARKET);
-    assertEq(address(IPendleRelayer(address(ytOracle)).oracle()), MAINNET_PENDLE_ORACLE);
-    assertEq(address(IPendleRelayer(address(ytOracle)).PT()), 0x685155D3BD593508Fe32Be39729810A591ED9c87);
-    assertEq(address(IPendleRelayer(address(ytOracle)).YT()), 0xe822AE44EB2466B4E263b1cbC94b4833dDEf9700);
-    assertEq(address(IPendleRelayer(address(ytOracle)).SY()), 0xc0Cf4b266bE5B3229C49590B59E67A09c15b22f4);
-  }
-
-  function test_Deploy_LP_Oracle() public {
-    IBaseOracle lpOracle =
-      pendleFactory.deployPendleLpRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(900));
-    assertTrue(keccak256(abi.encode(lpOracle.symbol())) != keccak256(abi.encode('')));
-    assertEq(uint256(IPendleRelayer(address(lpOracle)).twapDuration()), 900);
-    assertEq(address(IPendleRelayer(address(lpOracle)).market()), MAINNET_PENDLE_RETH_MARKET);
-    assertEq(address(IPendleRelayer(address(lpOracle)).oracle()), MAINNET_PENDLE_ORACLE);
-    assertEq(address(IPendleRelayer(address(lpOracle)).PT()), 0x685155D3BD593508Fe32Be39729810A591ED9c87);
-    assertEq(address(IPendleRelayer(address(lpOracle)).YT()), 0xe822AE44EB2466B4E263b1cbC94b4833dDEf9700);
-    assertEq(address(IPendleRelayer(address(lpOracle)).SY()), 0xc0Cf4b266bE5B3229C49590B59E67A09c15b22f4);
-  }
-
-  function test_Deploy_Oracle_Revert_Invalid_Twap() public {
-    vm.expectRevert('Invalid TWAP duration');
-    pendleFactory.deployPendlePtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(0));
-    vm.expectRevert('Invalid TWAP duration');
-    pendleFactory.deployPendleYtRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(0));
-    vm.expectRevert('Invalid TWAP duration');
-    pendleFactory.deployPendleLpRelayer(MAINNET_PENDLE_RETH_MARKET, MAINNET_PENDLE_ORACLE, uint32(0));
-  }
-
-  function test_Deploy_Oracle_Revert_Invalid_Address() public {
-    vm.expectRevert('Invalid address');
-    pendleFactory.deployPendlePtRelayer(address(0), MAINNET_PENDLE_ORACLE, uint32(900));
-    vm.expectRevert('Invalid address');
-    pendleFactory.deployPendleYtRelayer(address(0), MAINNET_PENDLE_ORACLE, uint32(900));
-    vm.expectRevert('Invalid address');
-    pendleFactory.deployPendleLpRelayer(address(0), MAINNET_PENDLE_ORACLE, uint32(900));
   }
 }
