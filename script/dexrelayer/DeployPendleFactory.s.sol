@@ -22,9 +22,7 @@ contract DeployPendleFactory is Script {
   PendleRelayerFactory public pendleRelayerFactory;
 
   function run() public {
-
-    uint256 pk = vm.envUint();
-    vm.startBroadcast(pk);
+    vm.startBroadcast();
     pendleRelayerFactory = new PendleRelayerFactory();
     vm.stopBroadcast();
   }
