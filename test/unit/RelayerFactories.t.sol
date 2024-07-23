@@ -11,16 +11,12 @@ import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.
 import {CamelotRelayerChild} from '@contracts/factories/CamelotRelayerChild.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {ChainlinkRelayerChild} from '@contracts/factories/ChainlinkRelayerChild.sol';
-import {PendleRelayerFactory} from '@contracts/factories/pendle/PendleRelayerFactory.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {DenominatedOracleChild} from '@contracts/factories/DenominatedOracleChild.sol';
 import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
-import {MAINNET_PENDLE_ORACLE, MAINNET_PENDLE_RETH_MARKET} from '@script/Registry.s.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
-import {IPendleRelayerFactory} from '@interfaces/factories/IPendleRelayerFactory.sol';
-import {IPendleRelayer} from '@interfaces/oracles/pendle/IPendleRelayer.sol';
 
 abstract contract Base is DSTestPlus {
   address deployer = label('deployer');
@@ -391,9 +387,8 @@ contract Unit_DenominatedPriceOracleFactory_DeployDenominatedOracle is Base {
   }
 }
 
-contract Unit_Pendle_Renzo_Deploy_Oracle is Base {
+contract Unit_Renzo_Deploy_Oracle is Base {
   address mainnetAuthorizedAccount = 0xF78dA2A37049627636546E0cFAaB2aD664950917;
-  IPendleRelayerFactory public pendleFactory;
 
   function setUp() public virtual override {
     super.setUp();
@@ -401,7 +396,6 @@ contract Unit_Pendle_Renzo_Deploy_Oracle is Base {
     delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
     chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
     denominatedOracleFactory = DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
-    pendleFactory = IPendleRelayerFactory(address(new PendleRelayerFactory()));
     label(address(delayedOracleFactory), 'DelayedOracleFactory');
     label(address(chainlinkRelayerFactory), 'ChainlinkRelayerFactory');
     label(address(denominatedOracleFactory), 'DenominatedOracleFactory');
