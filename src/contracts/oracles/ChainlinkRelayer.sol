@@ -2,13 +2,12 @@
 pragma solidity 0.7.6;
 
 import {IChainlinkOracle} from '@interfaces/oracles/IChainlinkOracle.sol';
-import 'forge-std/console2.sol';
+
 /**
  * @title  ChainlinkRelayer
  * @notice This contracts transforms a Chainlink price feed into a standard IBaseOracle feed
  *         It also verifies that the reading is new enough, compared to a STALE_THRESHOLD
  */
-
 contract ChainlinkRelayer {
   uint256 public immutable STALE_THRESHOLD;
   int256 public immutable MULTIPLIER;
@@ -48,7 +47,7 @@ contract ChainlinkRelayer {
   function read() public view virtual returns (uint256 _result) {
     // Fetch values from Chainlink
     (, int256 _aggregatorResult,, uint256 _aggregatorTimestamp,) = chainlinkFeed.latestRoundData();
-    console2.logInt(_aggregatorResult);
+
     // Revert if price is invalid
     require(_aggregatorResult != 0 && _isValidFeed(_aggregatorTimestamp), 'InvalidPriceFeed');
 
