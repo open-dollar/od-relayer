@@ -72,3 +72,47 @@ contract DeployLinkGrtEthOracles is Script, CommonMainnet {
     vm.stopBroadcast();
   }
 }
+
+// BROADCAST
+// source .env && forge script DeployWstethRethL2ValidityOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+// SIMULATE
+// source .env && forge script DeployWstethRethL2ValidityOracles --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployWstethRethL2ValidityOracles is Script, CommonMainnet {
+  IBaseOracle public _wstethETHRelayer;
+  IBaseOracle public _rethETHRelayer;
+
+  function run() public {
+    vm.startBroadcast();
+
+    _wstethETHRelayer = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
+      MAINNET_CHAINLINK_WSTETH_ETH_FEED,
+      MAINNET_CHAINLINK_SEQUENCER_FEED,
+      1 days,
+      MAINNET_CHAINLINK_L2VALIDITY_GRACE_PERIOD
+    );
+    _rethETHRelayer = chainlinkRelayerFactory.deployChainlinkRelayerWithL2Validity(
+      MAINNET_CHAINLINK_RETH_ETH_FEED,
+      MAINNET_CHAINLINK_SEQUENCER_FEED,
+      1 days,
+      MAINNET_CHAINLINK_L2VALIDITY_GRACE_PERIOD
+    );
+
+    IBaseOracle _wstethUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _wstethETHRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    IBaseOracle _rethUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _rethETHRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    IBaseOracle wstethOracle = delayedOracleFactory.deployDelayedOracle(_wstethUsdOracle, MAINNET_ORACLE_DELAY);
+    IBaseOracle rethOracle = delayedOracleFactory.deployDelayedOracle(_rethUsdOracle, MAINNET_ORACLE_DELAY);
+
+    wstethOracle.getResultWithValidity();
+    rethOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
