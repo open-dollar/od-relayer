@@ -5,6 +5,8 @@
   Open Dollar Relayer
 </h1>
 
+[![codecov](https://codecov.io/gh/open-dollar/od-relayer/graph/badge.svg?token=FB1JMPI0GX)](https://codecov.io/gh/open-dollar/od-relayer)
+
 This repository contains the smart contracts for the relayers used in Open Dollar.
 
 # Resources
