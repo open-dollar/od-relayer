@@ -12,7 +12,7 @@ env:
   ARB_MAINNET_RPC: ${{ secrets.ARB_MAINNET_RPC }}
   
 jobs:
-  build:
+  coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
