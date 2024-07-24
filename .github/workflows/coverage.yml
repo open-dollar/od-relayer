@@ -6,6 +6,11 @@ concurrency:
   group: ${{github.workflow}}-${{github.ref}}
   cancel-in-progress: true
 
+env:
+  FOUNDRY_PROFILE: ci
+  ARB_SEPOLIA_RPC: ${{ secrets.ARB_SEPOLIA_RPC }}
+  ARB_MAINNET_RPC: ${{ secrets.ARB_MAINNET_RPC }}
+  
 jobs:
   build:
     runs-on: ubuntu-latest
