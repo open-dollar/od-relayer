@@ -128,7 +128,7 @@ contract DeployCamelotOdUsdOracle is Script, CommonMainnet {
     vm.startBroadcast();
 
     _odEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(ORACLE_INTERVAL_TEST)
+      MAINNET_ALGEBRA_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
     _odUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
@@ -136,6 +136,33 @@ contract DeployCamelotOdUsdOracle is Script, CommonMainnet {
     );
 
     _odUsdOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotOdgUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+
+// SIMULATE
+// source .env && forge script DeployCamelotOdgUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
+  IBaseOracle public _odgEthCamelotRelayer;
+  IBaseOracle public _odgUsdOracle;
+
+  function run() public {
+    vm.startBroadcast();
+
+    _odgEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
+      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
+
+    _odgUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _odgEthCamelotRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    _odgUsdOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }
