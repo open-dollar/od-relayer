@@ -144,7 +144,7 @@ contract DeployArbUsdChainlinkRelayerMainnet is CommonMainnet {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_ARB_USD_FEED, MAINNET_ORACLE_INTERVAL);
+    chainlinkRelayerFactory.deployChainlinkRelayer(MAINNET_CHAINLINK_ARB_USD_FEED, MAINNET_ORACLE_DELAY);
     vm.stopBroadcast();
   }
 }
