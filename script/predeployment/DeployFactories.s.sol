@@ -24,9 +24,9 @@ contract DeployFactoriesMain is Script {
     _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     _denominatedOracleFactory = new DenominatedOracleFactory();
 
-    _camelotRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
-    _chainlinkRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
-    _denominatedOracleFactory.addAuthorization(MAINNET_DEPLOYER);
+    //_camelotRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
+    //_chainlinkRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
+    //_denominatedOracleFactory.addAuthorization(MAINNET_DEPLOYER);
     vm.stopBroadcast();
   }
 }
