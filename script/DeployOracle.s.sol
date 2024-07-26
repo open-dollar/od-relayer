@@ -6,9 +6,6 @@ import {Script} from 'forge-std/Script.sol';
 import {CommonMainnet} from '@script/Common.s.sol';
 import 'forge-std/console2.sol';
 
-import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
-import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
-import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
 // BROADCAST
@@ -112,6 +109,60 @@ contract DeployWstethRethL2ValidityOracles is Script, CommonMainnet {
 
     wstethOracle.getResultWithValidity();
     rethOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotOdUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+
+// SIMULATE
+// source .env && forge script DeployCamelotOdUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployCamelotOdUsdOracle is Script, CommonMainnet {
+  IBaseOracle public _odEthCamelotRelayer;
+  IBaseOracle public _odUsdOracle;
+
+  function run() public {
+    vm.startBroadcast();
+
+    _odEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
+      MAINNET_ALGEBRA_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
+
+    _odUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _odEthCamelotRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    _odUsdOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotOdgUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+
+// SIMULATE
+// source .env && forge script DeployCamelotOdgUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
+  IBaseOracle public _odgEthCamelotRelayer;
+  IBaseOracle public _odgUsdOracle;
+
+  function run() public {
+    vm.startBroadcast();
+
+    _odgEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
+      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
+
+    _odgUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+      _odgEthCamelotRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    _odgUsdOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }
