@@ -4,6 +4,7 @@ pragma solidity 0.7.6;
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
+import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
@@ -47,6 +48,26 @@ contract DeployFactoriesSepolia is Script {
     _camelotRelayerFactory = new CamelotRelayerFactory();
     _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     _denominatedOracleFactory = new DenominatedOracleFactory();
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotV2FactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployCamelotV2FactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployCamelotV2FactoryMain is Script {
+  CamelotV2RelayerFactory internal _camelotV2RelayerFactory;
+
+  function run() public {
+    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
+    _camelotV2RelayerFactory = new CamelotRelayerV2Factory();
+
+    _camelotV2RelayerFactory.addAuthorization(MAINNET_TIMELOCK_CONTROLLER);
+    _camelotV2RelayerFactory.removeAuthorization(MAINNET_DEPLOYER);
+
     vm.stopBroadcast();
   }
 }

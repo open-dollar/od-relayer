@@ -2,30 +2,30 @@
 pragma solidity 0.7.6;
 
 import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
-import {IAlgebraFactory} from '@algebra-core/interfaces/IAlgebraFactory.sol';
-import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IDataStorageOperator} from '@algebra-core/interfaces/IDataStorageOperator.sol';
 import {DataStorageLibrary} from '@algebra-periphery/libraries/DataStorageLibrary.sol';
+import {ICamelotFactory} from '@interfaces/camelot/ICamelotFactory.sol';
+import {ICamelotPair} from '@interfaces/camelot/ICamelotPair.sol';
 
-contract UniswapV2Relayer {
+contract CamelotV2Relayer {
   int256 public immutable MULTIPLIER;
   uint32 public immutable QUOTE_PERIOD;
   uint128 public immutable BASE_AMOUNT;
 
   // --- Registry ---
-  address public algebraPool;
+  address public camelotV2Pool;
   address public baseToken;
   address public quoteToken;
 
   // --- Data ---
   string public symbol;
 
-  constructor(address _algebraV3Factory, address _baseToken, address _quoteToken, uint32 _quotePeriod) {
-    algebraPool = IAlgebraFactory(_algebraV3Factory).poolByPair(_baseToken, _quoteToken);
-    require(algebraPool != address(0));
+  constructor(address _camelotV2Factory, address _baseToken, address _quoteToken, uint32 _quotePeriod) {
+    camelotV2Pool = ICamelotFactory(_camelotV2Factory).getPair(_baseToken, _quoteToken);
+    require(camelotV2Pool != address(0));
 
-    address _token0 = IAlgebraPool(algebraPool).token0();
-    address _token1 = IAlgebraPool(algebraPool).token1();
+    address _token0 = ICamelotPair(camelotV2Pool).token0();
+    address _token1 = ICamelotPair(camelotV2Pool).token1();
 
     // The factory validates that both token0 and token1 are desired baseToken and quoteTokens
     if (_token0 == _baseToken) {
@@ -47,7 +47,7 @@ contract UniswapV2Relayer {
     // TODO: add catch if the pool doesn't have enough history - return false
 
     // Consult the query with a TWAP period of QUOTE_PERIOD
-    int24 _arithmeticMeanTick = DataStorageLibrary.consult(algebraPool, QUOTE_PERIOD);
+    int24 _arithmeticMeanTick = DataStorageLibrary.consult(camelotV2Pool, QUOTE_PERIOD);
     // Calculate the quote amount
     uint256 _quoteAmount = DataStorageLibrary.getQuoteAtTick({
       tick: _arithmeticMeanTick,
@@ -62,7 +62,7 @@ contract UniswapV2Relayer {
 
   function read() external view returns (uint256 _result) {
     // This call may revert with 'OLD!' if the pool doesn't have enough cardinality or initialized history
-    int24 _arithmeticMeanTick = DataStorageLibrary.consult(algebraPool, QUOTE_PERIOD);
+    int24 _arithmeticMeanTick = DataStorageLibrary.consult(camelotV2Pool, QUOTE_PERIOD);
     uint256 _quoteAmount = DataStorageLibrary.getQuoteAtTick({
       tick: _arithmeticMeanTick,
       baseAmount: BASE_AMOUNT,

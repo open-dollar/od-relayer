@@ -175,7 +175,7 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
 // source .env && forge script DeployCamelotEPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
 
 contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
-  IBaseOracle public _ePendlePendleUniswapV2Relayer;
+  IBaseOracle public _ePendlePendleCamelotV2Relayer;
   IBaseOracle public _PendleEthOracleRelayer;
   IBaseOracle public _PendleUsdOracleRelayer;
   IBaseOracle public _ePendleUsdOracle;
@@ -186,9 +186,9 @@ contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
   function run() public {
     vm.startBroadcast();
 
-    // _ePendleEthUniswapV2Relayer = uniswapV2RelayerFactory.deployAlgebraRelayer(
-    //   MAINNET_ALGEBRA_V2_FACTORY, MAINNET_E_PENDLE, MAINNET_PENDLE, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
-    // );
+    _ePendlePendleCamelotV2Relayer = camelotV2RelayerFactory.deployCamelotV2Relayer(
+      MAINNET_CAMELOT_V2_FACTORY, MAINNET_E_PENDLE, MAINNET_PENDLE, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
 
     _PendleEthOracleRelayer = camelotRelayerFactory.deployAlgebraRelayer(
       MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PENDLE, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
@@ -198,17 +198,17 @@ contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
       _PendleEthOracleRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
     );
 
-    // _ePendleUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
-    //   _ePendleEthUniswapV2Relayer, _PendleUsdOracleRelayer, false
-    // );
+    _ePendleUsdOracle =
+      denominatedOracleFactory.deployDenominatedOracle(_ePendlePendleCamelotV2Relayer, _PendleUsdOracleRelayer, false);
 
-    // IBaseOracle ePendleDelayedOracle =
-    //   delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
+    IBaseOracle ePendleDelayedOracle =
+      delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
 
     _PendleUsdOracleRelayer.symbol();
     _PendleUsdOracleRelayer.getResultWithValidity();
-    // _ePendleUsdOracle.getResultWithValidity();
-    // ePendleDelayedOracle.getResultWithValidity();
+
+    ePendleDelayedOracle.symbol();
+    ePendleDelayedOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }
