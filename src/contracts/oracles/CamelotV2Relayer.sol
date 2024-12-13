@@ -13,7 +13,7 @@ contract CamelotV2Relayer {
   uint128 public immutable BASE_AMOUNT;
 
   // --- Registry ---
-  address public camelotV2Pool;
+  address public camelotV2Pair;
   address public baseToken;
   address public quoteToken;
 
@@ -21,11 +21,12 @@ contract CamelotV2Relayer {
   string public symbol;
 
   constructor(address _camelotV2Factory, address _baseToken, address _quoteToken, uint32 _quotePeriod) {
-    camelotV2Pool = ICamelotFactory(_camelotV2Factory).getPair(_baseToken, _quoteToken);
-    require(camelotV2Pool != address(0));
+    camelotV2Pair = ICamelotFactory(_camelotV2Factory).getPair(_baseToken, _quoteToken);
+    require(camelotV2Pair != address(0));
+    require(camelotV2Pair.stableSwap() == false);
 
-    address _token0 = ICamelotPair(camelotV2Pool).token0();
-    address _token1 = ICamelotPair(camelotV2Pool).token1();
+    address _token0 = ICamelotPair(camelotV2Pair).token0();
+    address _token1 = ICamelotPair(camelotV2Pair).token1();
 
     // The factory validates that both token0 and token1 are desired baseToken and quoteTokens
     if (_token0 == _baseToken) {
@@ -42,6 +43,8 @@ contract CamelotV2Relayer {
 
     symbol = string(abi.encodePacked(IERC20Metadata(_baseToken).symbol(), ' / ', IERC20Metadata(_quoteToken).symbol()));
   }
+
+  // TODO: Update calculation for V2
 
   function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
     // TODO: add catch if the pool doesn't have enough history - return false
