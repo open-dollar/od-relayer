@@ -63,7 +63,7 @@ contract DeployCamelotV2FactoryMain is Script {
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    _camelotV2RelayerFactory = new CamelotRelayerV2Factory();
+    _camelotV2RelayerFactory = new CamelotV2RelayerFactory();
 
     _camelotV2RelayerFactory.addAuthorization(MAINNET_TIMELOCK_CONTROLLER);
     _camelotV2RelayerFactory.removeAuthorization(MAINNET_DEPLOYER);
