@@ -23,7 +23,12 @@ contract CamelotV2Relayer {
   constructor(address _camelotV2Factory, address _baseToken, address _quoteToken, uint32 _quotePeriod) {
     camelotV2Pair = ICamelotFactory(_camelotV2Factory).getPair(_baseToken, _quoteToken);
     require(camelotV2Pair != address(0));
-    require(camelotV2Pair.stableSwap() == false);
+    require(ICamelotPair(camelotV2Pair).stableSwap() == false);
+
+    uint112 reserve0;
+    uint112 reserve1;
+    (reserve0, reserve1,,) = ICamelotPair(camelotV2Pair).getReserves();
+    require(reserve0 != 0 && reserve1 != 0, 'CamelotV2Relayer: INSUFFICIENT_RESERVES');
 
     address _token0 = ICamelotPair(camelotV2Pair).token0();
     address _token1 = ICamelotPair(camelotV2Pair).token1();
@@ -44,35 +49,43 @@ contract CamelotV2Relayer {
     symbol = string(abi.encodePacked(IERC20Metadata(_baseToken).symbol(), ' / ', IERC20Metadata(_quoteToken).symbol()));
   }
 
-  // TODO: Update calculation for V2
-
   function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
-    // TODO: add catch if the pool doesn't have enough history - return false
+    uint112 _reserve0;
+    uint112 _reserve1;
+    (_reserve0, _reserve1,,) = ICamelotPair(camelotV2Pair).getReserves();
 
-    // Consult the query with a TWAP period of QUOTE_PERIOD
-    int24 _arithmeticMeanTick = DataStorageLibrary.consult(camelotV2Pool, QUOTE_PERIOD);
-    // Calculate the quote amount
-    uint256 _quoteAmount = DataStorageLibrary.getQuoteAtTick({
-      tick: _arithmeticMeanTick,
-      baseAmount: BASE_AMOUNT,
-      baseToken: baseToken,
-      quoteToken: quoteToken
-    });
-    // Process the quote result to 18 decimal quote
-    _result = _parseResult(_quoteAmount);
+    require(_reserve0 > 0 && _reserve1 > 0, 'CamelotPair: INSUFFICIENT_RESERVES');
+
+    uint256 price;
+    if (baseToken == ICamelotPair(camelotV2Pair).token0()) {
+      // baseToken is token0, quoteToken is token1
+      price = uint256(_reserve1) * BASE_AMOUNT / uint256(_reserve0);
+    } else {
+      // baseToken is token1, quoteToken is token0
+      price = uint256(_reserve0) * BASE_AMOUNT / uint256(_reserve1);
+    }
+
+    _result = _parseResult(price);
     _validity = true;
   }
 
   function read() external view returns (uint256 _result) {
-    // This call may revert with 'OLD!' if the pool doesn't have enough cardinality or initialized history
-    int24 _arithmeticMeanTick = DataStorageLibrary.consult(camelotV2Pool, QUOTE_PERIOD);
-    uint256 _quoteAmount = DataStorageLibrary.getQuoteAtTick({
-      tick: _arithmeticMeanTick,
-      baseAmount: BASE_AMOUNT,
-      baseToken: baseToken,
-      quoteToken: quoteToken
-    });
-    _result = _parseResult(_quoteAmount);
+    uint112 _reserve0;
+    uint112 _reserve1;
+    (_reserve0, _reserve1,,) = ICamelotPair(camelotV2Pair).getReserves();
+
+    require(_reserve0 > 0 && _reserve1 > 0, 'CamelotPair: INSUFFICIENT_RESERVES');
+
+    uint256 price;
+    if (baseToken == ICamelotPair(camelotV2Pair).token0()) {
+      // baseToken is token0, quoteToken is token1
+      price = uint256(_reserve1) * BASE_AMOUNT / uint256(_reserve0);
+    } else {
+      // baseToken is token1, quoteToken is token0
+      price = uint256(_reserve0) * BASE_AMOUNT / uint256(_reserve1);
+    }
+
+    _result = _parseResult(price);
   }
 
   function _parseResult(uint256 _quoteResult) internal view returns (uint256 _result) {

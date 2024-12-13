@@ -5,6 +5,7 @@ import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {CommonMainnet} from '@script/Common.s.sol';
 import 'forge-std/console2.sol';
+import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
@@ -179,14 +180,19 @@ contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
   IBaseOracle public _PendleEthOracleRelayer;
   IBaseOracle public _PendleUsdOracleRelayer;
   IBaseOracle public _ePendleUsdOracle;
+  IBaseOracle public _ePendleDelayedOracle;
 
   address public MAINNET_E_PENDLE = 0x3EaBE18eAE267D1B57f917aBa085bb5906114600;
   address public MAINNET_PENDLE = 0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8;
+  CamelotV2RelayerFactory internal _camelotV2RelayerFactory;
 
   function run() public {
     vm.startBroadcast();
 
-    _ePendlePendleCamelotV2Relayer = camelotV2RelayerFactory.deployCamelotV2Relayer(
+    // TODO: remove factory deployment
+    _camelotV2RelayerFactory = new CamelotV2RelayerFactory();
+
+    _ePendlePendleCamelotV2Relayer = _camelotV2RelayerFactory.deployCamelotV2Relayer(
       MAINNET_CAMELOT_V2_FACTORY, MAINNET_E_PENDLE, MAINNET_PENDLE, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
@@ -201,14 +207,14 @@ contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
     _ePendleUsdOracle =
       denominatedOracleFactory.deployDenominatedOracle(_ePendlePendleCamelotV2Relayer, _PendleUsdOracleRelayer, false);
 
-    IBaseOracle ePendleDelayedOracle =
+    _ePendleDelayedOracle =
       delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
 
     _PendleUsdOracleRelayer.symbol();
     _PendleUsdOracleRelayer.getResultWithValidity();
 
-    ePendleDelayedOracle.symbol();
-    ePendleDelayedOracle.getResultWithValidity();
+    _ePendleDelayedOracle.symbol();
+    _ePendleDelayedOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }
