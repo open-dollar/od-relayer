@@ -128,7 +128,7 @@ contract DeployCamelotOdUsdOracle is Script, CommonMainnet {
     vm.startBroadcast();
 
     _odEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
     _odUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
@@ -155,7 +155,7 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
     vm.startBroadcast();
 
     _odgEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
     _odgUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
@@ -163,6 +163,52 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
     );
 
     _odgUsdOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotEPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+
+// SIMULATE
+// source .env && forge script DeployCamelotEPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
+  IBaseOracle public _ePendlePendleUniswapV2Relayer;
+  IBaseOracle public _PendleEthOracleRelayer;
+  IBaseOracle public _PendleUsdOracleRelayer;
+  IBaseOracle public _ePendleUsdOracle;
+
+  address public MAINNET_E_PENDLE = 0x3EaBE18eAE267D1B57f917aBa085bb5906114600;
+  address public MAINNET_PENDLE = 0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8;
+
+  function run() public {
+    vm.startBroadcast();
+
+    // _ePendleEthUniswapV2Relayer = uniswapV2RelayerFactory.deployAlgebraRelayer(
+    //   MAINNET_ALGEBRA_V2_FACTORY, MAINNET_E_PENDLE, MAINNET_PENDLE, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    // );
+
+    _PendleEthOracleRelayer = camelotRelayerFactory.deployAlgebraRelayer(
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PENDLE, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
+
+    _PendleUsdOracleRelayer = denominatedOracleFactory.deployDenominatedOracle(
+      _PendleEthOracleRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    // _ePendleUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
+    //   _ePendleEthUniswapV2Relayer, _PendleUsdOracleRelayer, false
+    // );
+
+    // IBaseOracle ePendleDelayedOracle =
+    //   delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
+
+    _PendleUsdOracleRelayer.symbol();
+    _PendleUsdOracleRelayer.getResultWithValidity();
+    // _ePendleUsdOracle.getResultWithValidity();
+    // ePendleDelayedOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }

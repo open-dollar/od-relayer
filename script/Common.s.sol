@@ -11,10 +11,12 @@ import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
+// import {UniswapV2RelayerFactory} from '@contracts/factories/UniswapV2RelayerFactory.sol';
 
 abstract contract CommonMainnet is Script {
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
   CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_RELAYER_FACTORY);
+  // UniswapV2RelayerFactory public camelotV2RelayerFactory = UniswapV2RelayerFactory(MAINNET_CAMELOT_V2_RELAYER_FACTORY);
   DenominatedOracleFactory public denominatedOracleFactory =
     DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
   IDelayedOracleFactory public delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);
