@@ -56,9 +56,7 @@ contract CamelotV2Relayer {
   }
 
   function getResultWithValidity() external view returns (uint256 _result, bool _validity) {
-    updatePrice();
-
-    // TODO
+    uint256 price = getTWAP(QUOTE_PERIOD);
 
     _result = _parseResult(price);
     _validity = true;
@@ -69,26 +67,26 @@ contract CamelotV2Relayer {
   }
 
   function getCurrentPrice() internal view returns (uint256) {
-    uint112 reserve0;
-    uint112 reserve1;
-    (reserve0, reserve1,,) = ICamelotPair(camelotV2Pair).getReserves();
+    uint112 _reserve0;
+    uint112 _reserve1;
+    (_reserve0, _reserve1,,) = ICamelotPair(camelotV2Pair).getReserves();
 
     require(_reserve0 > 0 && _reserve1 > 0, 'CamelotPair: INSUFFICIENT_RESERVES');
 
     uint256 price;
     if (baseToken == ICamelotPair(camelotV2Pair).token0()) {
       // baseToken is token0, quoteToken is token1
-      price = FullMath.mulDiv(reserve1, BASE_AMOUNT, reserve0);
+      price = FullMath.mulDiv(_reserve1, BASE_AMOUNT, _reserve0);
     } else {
       // baseToken is token1, quoteToken is token0
-      price = FullMath.mulDiv(reserve0, BASE_AMOUNT, reserve1);
+      price = FullMath.mulDiv(_reserve0, BASE_AMOUNT, _reserve1);
     }
 
     return _parseResult(price);
   }
 
   // Function to calculate the TWAP
-  function getTWAP(uint32 period) external view returns (uint256 twap) {
+  function getTWAP(uint32 period) internal view returns (uint256 twap) {
     uint256 totalWeightedPrice = 0;
     uint256 totalTime = 0;
 
@@ -103,7 +101,7 @@ contract CamelotV2Relayer {
     twap = totalWeightedPrice / totalTime;
   }
 
-  function _updatePrice() internal {
+  function updatePrice() external {
     uint256 currentPrice = getCurrentPrice();
     uint256 currentTime = block.timestamp;
 

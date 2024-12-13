@@ -8,6 +8,7 @@ import 'forge-std/console2.sol';
 import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
+import {ICamelotV2Relayer} from '@interfaces/oracles/ICamelotV2Relayer.sol';
 
 // BROADCAST
 // source .env && forge script DeployEthUsdRelayer --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
@@ -207,14 +208,20 @@ contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
     _ePendleUsdOracle =
       denominatedOracleFactory.deployDenominatedOracle(_ePendlePendleCamelotV2Relayer, _PendleUsdOracleRelayer, false);
 
-    _ePendleDelayedOracle =
-      delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
+    ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
+    vm.warp(block.timestamp + 30 minutes);
+    ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
+    _ePendlePendleCamelotV2Relayer.getResultWithValidity();
 
-    _PendleUsdOracleRelayer.symbol();
-    _PendleUsdOracleRelayer.getResultWithValidity();
+    // _ePendleDelayedOracle =
+    //   delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
 
-    _ePendleDelayedOracle.symbol();
-    _ePendleDelayedOracle.getResultWithValidity();
+    // _PendleUsdOracleRelayer.symbol();
+    // _PendleUsdOracleRelayer.getResultWithValidity();
+
+    // _ePendleDelayedOracle.symbol();
+    // ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
+    // _ePendleDelayedOracle.getResultWithValidity();
 
     vm.stopBroadcast();
   }

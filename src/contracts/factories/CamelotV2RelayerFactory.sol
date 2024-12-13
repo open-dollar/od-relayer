@@ -2,6 +2,7 @@
 pragma solidity 0.7.6;
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
+import {ICamelotV2Relayer} from '@interfaces/oracles/ICamelotV2Relayer.sol';
 import {CamelotV2RelayerChild} from '@contracts/factories/CamelotV2RelayerChild.sol';
 import {Authorizable} from '@contracts/utils/Authorizable.sol';
 
@@ -25,7 +26,8 @@ contract CamelotV2RelayerFactory is Authorizable {
     address _quoteToken,
     uint32 _quotePeriod
   ) external isAuthorized returns (IBaseOracle _relayer) {
-    _relayer = IBaseOracle(address(new CamelotV2RelayerChild(_camelotV2Factory, _baseToken, _quoteToken, _quotePeriod)));
+    _relayer =
+      ICamelotV2Relayer(address(new CamelotV2RelayerChild(_camelotV2Factory, _baseToken, _quoteToken, _quotePeriod)));
     relayerId++;
     relayerById[relayerId] = address(_relayer);
     emit NewCamelotV2Relayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);
