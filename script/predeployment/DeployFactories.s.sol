@@ -15,14 +15,14 @@ import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFa
 // source .env && forge script DeployFactoriesMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployFactoriesMain is Script {
-  CamelotRelayerFactory internal _camelotRelayerFactory;
-  ChainlinkRelayerFactory internal _chainlinkRelayerFactory;
+  // CamelotRelayerFactory internal _camelotRelayerFactory;
+  // ChainlinkRelayerFactory internal _chainlinkRelayerFactory;
   DenominatedOracleFactory internal _denominatedOracleFactory;
 
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    _camelotRelayerFactory = new CamelotRelayerFactory();
-    _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
+    vm.startBroadcast();
+    // _camelotRelayerFactory = new CamelotRelayerFactory();
+    // _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     _denominatedOracleFactory = new DenominatedOracleFactory();
 
     //_camelotRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
@@ -53,17 +53,17 @@ contract DeployFactoriesSepolia is Script {
 }
 
 // BROADCAST
-// source .env && forge script DeployCamelotV2FactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+// source .env && forge script DeployCamelotFactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
 
 // SIMULATE
-// source .env && forge script DeployCamelotV2FactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+// source .env && forge script DeployCamelotFactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
-contract DeployCamelotV2FactoryMain is Script {
-  CamelotV2RelayerFactory internal _camelotV2RelayerFactory;
+contract DeployCamelotFactoryMain is Script {
+  CamelotRelayerFactory internal _camelotRelayerFactory;
 
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    _camelotV2RelayerFactory = new CamelotV2RelayerFactory();
+    vm.startBroadcast();
+    _camelotRelayerFactory = new CamelotRelayerFactory();
 
     vm.stopBroadcast();
   }

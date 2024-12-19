@@ -5,10 +5,11 @@ import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {CommonMainnet} from '@script/Common.s.sol';
 import 'forge-std/console2.sol';
-import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
+
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
+import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
-import {ICamelotV2Relayer} from '@interfaces/oracles/ICamelotV2Relayer.sol';
 
 // BROADCAST
 // source .env && forge script DeployEthUsdRelayer --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --account defaultKey --sender $DEFAULT_KEY_PUBLIC_ADDRESS
@@ -171,57 +172,34 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
 }
 
 // BROADCAST
-// source .env && forge script DeployCamelotEPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+// source .env && forge script DeployCamelotPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
 
 // SIMULATE
-// source .env && forge script DeployCamelotEPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+// source .env && forge script DeployCamelotPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
 
-contract DeployCamelotEPendleUsdOracle is Script, CommonMainnet {
-  IBaseOracle public _ePendlePendleCamelotV2Relayer;
+contract DeployCamelotPendleUsdOracle is Script, CommonMainnet {
   IBaseOracle public _PendleEthOracleRelayer;
   IBaseOracle public _PendleUsdOracleRelayer;
-  IBaseOracle public _ePendleUsdOracle;
-  IBaseOracle public _ePendleDelayedOracle;
 
-  address public MAINNET_E_PENDLE = 0x3EaBE18eAE267D1B57f917aBa085bb5906114600;
   address public MAINNET_PENDLE = 0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8;
-  CamelotV2RelayerFactory internal _camelotV2RelayerFactory;
+  CamelotRelayerFactory public _camelotRelayerFactory =
+    CamelotRelayerFactory(0xC4E3cE2941476faCC2447497731A6050eEfa25C8);
+  DenominatedOracleFactory public _denominatedOracleFactory =
+    DenominatedOracleFactory(0x7028f637d5340da4bC8D3Ef9DfeC5D4D79dE8116);
 
   function run() public {
     vm.startBroadcast();
 
-    // TODO: remove factory deployment
-    _camelotV2RelayerFactory = new CamelotV2RelayerFactory();
-
-    _ePendlePendleCamelotV2Relayer = _camelotV2RelayerFactory.deployCamelotV2Relayer(
-      MAINNET_CAMELOT_V2_FACTORY, MAINNET_E_PENDLE, MAINNET_PENDLE, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
-    );
-
-    _PendleEthOracleRelayer = camelotRelayerFactory.deployAlgebraRelayer(
+    _PendleEthOracleRelayer = _camelotRelayerFactory.deployAlgebraRelayer(
       MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PENDLE, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
-    _PendleUsdOracleRelayer = denominatedOracleFactory.deployDenominatedOracle(
+    _PendleUsdOracleRelayer = _denominatedOracleFactory.deployDenominatedOracle(
       _PendleEthOracleRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
     );
 
-    _ePendleUsdOracle =
-      denominatedOracleFactory.deployDenominatedOracle(_ePendlePendleCamelotV2Relayer, _PendleUsdOracleRelayer, false);
-
-    ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
-    vm.warp(block.timestamp + 30 minutes);
-    ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
-    _ePendlePendleCamelotV2Relayer.getResultWithValidity();
-
-    // _ePendleDelayedOracle =
-    //   delayedOracleFactory.deployDelayedOracle(IBaseOracle(_ePendleUsdOracle), MAINNET_ORACLE_DELAY);
-
-    // _PendleUsdOracleRelayer.symbol();
-    // _PendleUsdOracleRelayer.getResultWithValidity();
-
-    // _ePendleDelayedOracle.symbol();
-    // ICamelotV2Relayer(address(_ePendlePendleCamelotV2Relayer)).updatePrice();
-    // _ePendleDelayedOracle.getResultWithValidity();
+    _PendleUsdOracleRelayer.symbol();
+    _PendleUsdOracleRelayer.getResultWithValidity();
 
     vm.stopBroadcast();
   }
