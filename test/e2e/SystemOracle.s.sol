@@ -3,7 +3,7 @@ pragma solidity 0.7.6;
 pragma abicoder v2;
 
 import {
-  MAINNET_ALGEBRA_FACTORY,
+  MAINNET_ALGEBRA_V3_FACTORY,
   MAINNET_CHAINLINK_ETH_USD_FEED,
   MAINNET_CHAINLINK_ARB_USD_FEED,
   MAINNET_CHAINLINK_SEQUENCER_FEED,
@@ -103,8 +103,8 @@ contract OracleSetup is DSTestPlus {
     );
 
     // --- Camelot ---
-    arbEthPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ARB, ETH, STALE_PRICE))); // correct
-    ethArbPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_FACTORY, ETH, ARB, STALE_PRICE))); // inverted
+    arbEthPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_V3_FACTORY, ARB, ETH, STALE_PRICE))); // correct
+    ethArbPriceSource = IBaseOracle(address(new CamelotRelayer(MAINNET_ALGEBRA_V3_FACTORY, ETH, ARB, STALE_PRICE))); // inverted
 
     // --- Denominated ---
     arbUsdPriceSource = IDenominatedOracle(address(new DenominatedOracle(arbEthPriceSource, ethUsdPriceSource, false)));

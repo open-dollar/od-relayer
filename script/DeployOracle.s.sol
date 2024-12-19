@@ -6,6 +6,9 @@ import {Script} from 'forge-std/Script.sol';
 import {CommonMainnet} from '@script/Common.s.sol';
 import 'forge-std/console2.sol';
 
+import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
+import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
+
 import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 
 // BROADCAST
@@ -128,7 +131,7 @@ contract DeployCamelotOdUsdOracle is Script, CommonMainnet {
     vm.startBroadcast();
 
     _odEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_SYSTEM_COIN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
     _odUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
@@ -155,7 +158,7 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
     vm.startBroadcast();
 
     _odgEthCamelotRelayer = camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
     );
 
     _odgUsdOracle = denominatedOracleFactory.deployDenominatedOracle(
@@ -163,6 +166,40 @@ contract DeployCamelotOdgUsdOracle is Script, CommonMainnet {
     );
 
     _odgUsdOracle.getResultWithValidity();
+
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY --sender $DEFAULT_KEY_PUBLIC_ADDRESS --account defaultKey
+
+// SIMULATE
+// source .env && forge script DeployCamelotPendleUsdOracle --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --sender $DEFAULT_KEY_PUBLIC_ADDRESS
+
+contract DeployCamelotPendleUsdOracle is Script, CommonMainnet {
+  IBaseOracle public _PendleEthOracleRelayer;
+  IBaseOracle public _PendleUsdOracleRelayer;
+
+  address public MAINNET_PENDLE = 0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8;
+  CamelotRelayerFactory public _camelotRelayerFactory =
+    CamelotRelayerFactory(0xC4E3cE2941476faCC2447497731A6050eEfa25C8);
+  DenominatedOracleFactory public _denominatedOracleFactory =
+    DenominatedOracleFactory(0x7028f637d5340da4bC8D3Ef9DfeC5D4D79dE8116);
+
+  function run() public {
+    vm.startBroadcast();
+
+    _PendleEthOracleRelayer = _camelotRelayerFactory.deployAlgebraRelayer(
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PENDLE, MAINNET_WETH, uint32(MAINNET_CAMELOT_QUOTE_PERIOD)
+    );
+
+    _PendleUsdOracleRelayer = _denominatedOracleFactory.deployDenominatedOracle(
+      _PendleEthOracleRelayer, IBaseOracle(MAINNET_CHAINLINK_L2VALIDITY_ETH_USD_RELAYER), false
+    );
+
+    _PendleUsdOracleRelayer.symbol();
+    _PendleUsdOracleRelayer.getResultWithValidity();
 
     vm.stopBroadcast();
   }

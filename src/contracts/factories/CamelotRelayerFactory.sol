@@ -20,12 +20,12 @@ contract CamelotRelayerFactory is Authorizable {
   // --- Methods ---
 
   function deployAlgebraRelayer(
-    address _algebraV3Factory,
+    address _algebraFactory,
     address _baseToken,
     address _quoteToken,
     uint32 _quotePeriod
   ) external isAuthorized returns (IBaseOracle _relayer) {
-    _relayer = IBaseOracle(address(new CamelotRelayerChild(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod)));
+    _relayer = IBaseOracle(address(new CamelotRelayerChild(_algebraFactory, _baseToken, _quoteToken, _quotePeriod)));
     relayerId++;
     relayerById[relayerId] = address(_relayer);
     emit NewAlgebraRelayer(address(_relayer), _baseToken, _quoteToken, _quotePeriod);

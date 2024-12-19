@@ -7,9 +7,9 @@ import {FactoryChild} from '@contracts/factories/FactoryChild.sol';
 contract CamelotRelayerChild is CamelotRelayer, FactoryChild {
   // --- Init ---
   constructor(
-    address _algebraV3Factory,
+    address _algebraFactory,
     address _baseToken,
     address _quoteToken,
     uint32 _quotePeriod
-  ) CamelotRelayer(_algebraV3Factory, _baseToken, _quoteToken, _quotePeriod) {}
+  ) CamelotRelayer(_algebraFactory, _baseToken, _quoteToken, _quotePeriod) {}
 }

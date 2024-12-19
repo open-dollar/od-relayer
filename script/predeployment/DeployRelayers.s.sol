@@ -15,12 +15,12 @@ import {IBaseOracle} from '@interfaces/oracles/IBaseOracle.sol';
 // source .env && forge script DeployODGCamelotRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployODGCamelotRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
     camelotRelayerFactory.deployAlgebraRelayer(
-      MAINNET_ALGEBRA_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_ORACLE_DELAY)
+      MAINNET_ALGEBRA_V3_FACTORY, MAINNET_PROTOCOL_TOKEN, MAINNET_WETH, uint32(MAINNET_ORACLE_DELAY)
     );
     vm.stopBroadcast();
   }
@@ -33,7 +33,7 @@ contract DeployODGCamelotRelayerMainnet is CommonMainnet {
 // source .env && forge script DeployOdgUsdRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployOdgUsdRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
@@ -53,7 +53,7 @@ contract DeployOdgUsdRelayerMainnet is CommonMainnet {
 // source .env && forge script DeployEthUsdChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployEthUsdChainlinkRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
@@ -69,7 +69,7 @@ contract DeployEthUsdChainlinkRelayerMainnet is CommonMainnet {
 // source .env && forge script DeployRethEthChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployRethEthChainlinkRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
@@ -92,7 +92,7 @@ contract DeployRethEthChainlinkRelayerMainnet is CommonMainnet {
 // source .env && forge script DeployWstethEthChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployWstethEthChainlinkRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
@@ -140,7 +140,7 @@ contract DeployEzEthUSDPriceFeed is CommonMainnet {
 // source .env && forge script DeployArbUsdChainlinkRelayerMainnet --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployArbUsdChainlinkRelayerMainnet is CommonMainnet {
-  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_FACTORY);
+  IAlgebraFactory public algebraFactory = IAlgebraFactory(MAINNET_ALGEBRA_V3_FACTORY);
 
   function run() public {
     vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));

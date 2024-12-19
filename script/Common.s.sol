@@ -8,13 +8,15 @@ import {IERC20Metadata} from '@algebra-periphery/interfaces/IERC20Metadata.sol';
 import {IAlgebraPool} from '@algebra-core/interfaces/IAlgebraPool.sol';
 import {IAuthorizable} from '@interfaces/utils/IAuthorizable.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
+import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 import {IDelayedOracleFactory} from '@interfaces/factories/IDelayedOracleFactory.sol';
 
 abstract contract CommonMainnet is Script {
   ChainlinkRelayerFactory public chainlinkRelayerFactory = ChainlinkRelayerFactory(MAINNET_CHAINLINK_RELAYER_FACTORY);
-  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_RELAYER_FACTORY);
+  CamelotV2RelayerFactory public camelotV2RelayerFactory = CamelotV2RelayerFactory(MAINNET_CAMELOT_V2_RELAYER_FACTORY);
+  CamelotRelayerFactory public camelotRelayerFactory = CamelotRelayerFactory(MAINNET_CAMELOT_V3_RELAYER_FACTORY);
   DenominatedOracleFactory public denominatedOracleFactory =
     DenominatedOracleFactory(MAINNET_DENOMINATED_ORACLE_FACTORY);
   IDelayedOracleFactory public delayedOracleFactory = IDelayedOracleFactory(MAINNET_DELAYED_ORACLE_FACTORY);

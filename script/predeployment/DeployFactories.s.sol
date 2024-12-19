@@ -4,6 +4,7 @@ pragma solidity 0.7.6;
 import '@script/Registry.s.sol';
 import {Script} from 'forge-std/Script.sol';
 import {CamelotRelayerFactory} from '@contracts/factories/CamelotRelayerFactory.sol';
+import {CamelotV2RelayerFactory} from '@contracts/factories/CamelotV2RelayerFactory.sol';
 import {ChainlinkRelayerFactory} from '@contracts/factories/ChainlinkRelayerFactory.sol';
 import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFactory.sol';
 
@@ -14,14 +15,14 @@ import {DenominatedOracleFactory} from '@contracts/factories/DenominatedOracleFa
 // source .env && forge script DeployFactoriesMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
 
 contract DeployFactoriesMain is Script {
-  CamelotRelayerFactory internal _camelotRelayerFactory;
-  ChainlinkRelayerFactory internal _chainlinkRelayerFactory;
+  // CamelotRelayerFactory internal _camelotRelayerFactory;
+  // ChainlinkRelayerFactory internal _chainlinkRelayerFactory;
   DenominatedOracleFactory internal _denominatedOracleFactory;
 
   function run() public {
-    vm.startBroadcast(vm.envUint('ARB_MAINNET_DEPLOYER_PK'));
-    _camelotRelayerFactory = new CamelotRelayerFactory();
-    _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
+    vm.startBroadcast();
+    // _camelotRelayerFactory = new CamelotRelayerFactory();
+    // _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     _denominatedOracleFactory = new DenominatedOracleFactory();
 
     //_camelotRelayerFactory.addAuthorization(MAINNET_DEPLOYER);
@@ -47,6 +48,23 @@ contract DeployFactoriesSepolia is Script {
     _camelotRelayerFactory = new CamelotRelayerFactory();
     _chainlinkRelayerFactory = new ChainlinkRelayerFactory();
     _denominatedOracleFactory = new DenominatedOracleFactory();
+    vm.stopBroadcast();
+  }
+}
+
+// BROADCAST
+// source .env && forge script DeployCamelotFactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC --broadcast --verify --etherscan-api-key $ARB_ETHERSCAN_API_KEY
+
+// SIMULATE
+// source .env && forge script DeployCamelotFactoryMain --with-gas-price 2000000000 -vvvvv --rpc-url $ARB_MAINNET_RPC
+
+contract DeployCamelotFactoryMain is Script {
+  CamelotRelayerFactory internal _camelotRelayerFactory;
+
+  function run() public {
+    vm.startBroadcast();
+    _camelotRelayerFactory = new CamelotRelayerFactory();
+
     vm.stopBroadcast();
   }
 }
